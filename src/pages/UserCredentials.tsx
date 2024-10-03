@@ -339,7 +339,7 @@ const UserCredentials = () => {
       console.log(organisationInfo);
       const org = await dispatch(addOrganisationDetails(organisationInfo));
       console.log(org);
-      if (org.payload === "Internal Server Error") {
+      if (typeof org.payload === "string") {
         alert.error("Failed to add organisation details");
         setIsLoading(false);
         return;
@@ -347,7 +347,7 @@ const UserCredentials = () => {
       userInfo.company_id = org.payload.company_id;
       const userResponse = await dispatch(registerUser(userInfo));
       console.log(userResponse);
-      if (userResponse.payload === "Internal Server Error") {
+      if (typeof userResponse.payload === "string") {
         alert.error("Failed to register user");
         setIsLoading(false);
         return;

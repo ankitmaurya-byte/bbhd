@@ -177,10 +177,12 @@ const LocationMaster = () => {
     index: number
   ) => {
     const value = e.currentTarget.value;
-    const longitudeRegex = /^-?(180|1[1-7][0-9]|\d{1,2})([.]{1}\d{0,5})?$/;
+    const longitudeRegex =
+      /^-?(180|1[1-7][0-9]|\d{0,2})(\d{1,2}[.]{1}\d{0,5})?$/;
     if (longitudeRegex.test(value) || value === "") {
       const tempLongitude = [...longitude];
       value.replace(".", "");
+
       tempLongitude[index] = value === "" ? null : value;
       setLongitude(tempLongitude);
       alert.removeAll();
@@ -197,7 +199,7 @@ const LocationMaster = () => {
   ) => {
     const value = e.currentTarget.value;
 
-    const latitudeRegex = /^-?(90|[1-8]?[0-9])([.]{1}\d{0,5})?$/;
+    const latitudeRegex = /^-?(90|[1-8]?[0-9]|\d{0,1})(\d{1,2}[.]{1}\d{0,5})?$/;
     if (latitudeRegex.test(value) || value === "") {
       const tempLatitude = [...latitude];
       value.replace(".", "");
@@ -259,6 +261,9 @@ const LocationMaster = () => {
     //     longitude: Number(longitude[i]),
     //   };
     // }
+    console.log(location);
+    console.log(latitude);
+    console.log(longitude);
     for (let i = 0; i < numberOfLocations; i++) {
       if (!location[i] || !latitude[i] || !longitude[i]) {
         continue;
@@ -266,8 +271,8 @@ const LocationMaster = () => {
       const longitudeRegex = /^-?(180|1[1-7][0-9]|\d{1,2})([.]{1}\d{1,5})$/;
       const latitudeRegex = /^-?(90|[1-8]?[0-9])([.]{1}\d{1,5})$/;
       if (
-        !latitudeRegex.test(latitude[i] + "") ||
-        !longitudeRegex.test(longitude[i] + "")
+        !latitudeRegex.test(latitude[i]) ||
+        !longitudeRegex.test(longitude[i])
       ) {
         alert.error("fill details properly");
         setIsLoading(false);
@@ -283,6 +288,12 @@ const LocationMaster = () => {
       // };
     }
     console.log(locationData);
+    if (locationData.locations.length === 0) {
+      alert.removeAll();
+      setIsLoading(false);
+      alert.error("please enter location data before submit");
+      return;
+    }
     dispatch(addLocations(locationData));
     // dispatch(setReduxLocations(setLoca));
     // const response = await axios.get(
