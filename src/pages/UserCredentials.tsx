@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../store/reduxHooks";
 import ModelConfiguration from "./ModelConfiguration";
+import Auth from "./Auth";
 // import { maincontainer } from "./Home";
 import { StepperProgressContext } from "../App";
 import axios from "axios";
@@ -380,6 +381,7 @@ const UserCredentials = () => {
       orgStatus === "succeeded" &&
       userStatus === "succeeded"
     ) {
+      setActiveStep((prev: number) => prev + 1);
       setNavigateNext(false);
       mainContent.setPages((prev) => [...prev, ModelConfiguration]);
       dispatch(setInfoSliceStatus("idel"));
@@ -413,7 +415,6 @@ const UserCredentials = () => {
         behavior: "smooth",
       });
       setTimeout(() => {
-        setActiveStep((prev: number) => prev + 1);
         mainContent.setPages((prev) =>
           prev.length >= 2 ? prev.slice(-1) : prev
         );
@@ -727,19 +728,41 @@ const UserCredentials = () => {
             icon={faArrowRight}
           />
         </div>
-        <div className="relative flex w-full">
-          <Button
-            disabled={isLoading}
-            className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
-            onClick={() => handleNavigateBack(ModelConfiguration)}
-          >
-            next
-          </Button>
-          <FontAwesomeIcon
-            className="cursor-pointer text-yellow-600 hover:text-yellow-700 font-bold absolute right-[10%] top-1/2 transform -translate-y-1/2"
-            icon={faArrowRight}
-          />
-        </div>
+        {userStatus === "succeeded" ? (
+          <div className="relative flex w-full">
+            <Button
+              disabled={isLoading}
+              className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
+              onClick={() => {
+                setActiveStep((prev: number) => prev + 1);
+                handleNavigateBack(ModelConfiguration);
+              }}
+            >
+              next
+            </Button>
+            <FontAwesomeIcon
+              className="cursor-pointer text-yellow-600 hover:text-yellow-700 font-bold absolute right-[10%] top-1/2 transform -translate-y-1/2"
+              icon={faArrowRight}
+            />
+          </div>
+        ) : (
+          <div className="relative flex w-full">
+            <Button
+              disabled={isLoading}
+              className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
+              onClick={() => {
+                setActiveStep((prev: number) => prev - 1);
+                handleNavigateBack(Auth);
+              }}
+            >
+              Back
+            </Button>
+            <FontAwesomeIcon
+              className="cursor-pointer text-yellow-600 hover:text-yellow-700 font-bold absolute right-[10%] top-1/2 transform -translate-y-1/2"
+              icon={faArrowRight}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

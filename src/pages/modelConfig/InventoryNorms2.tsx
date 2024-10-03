@@ -27,8 +27,6 @@ const ConfigurationCard = ({
   Day,
   days,
   setDays,
-  title,
-  isConfigured,
 }: {
   index: number;
   warehouseName: string;
@@ -41,8 +39,6 @@ const ConfigurationCard = ({
   Day: number;
   days: number[];
   setDays: React.Dispatch<React.SetStateAction<number[]>>;
-  title: string;
-  isConfigured: boolean;
 }) => {
   // const [Days, setDays] = useState(
   //   inventory.days !== "" ? inventory.days : "not set"
@@ -234,8 +230,6 @@ const InventoryNorms2 = () => {
                 Day={locations.length > index ? days[index] : 0}
                 days={days}
                 setDays={setDays}
-                title={`Location ${index + 1}`}
-                isConfigured={true}
               />
             ))}
           </div>

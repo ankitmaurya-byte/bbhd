@@ -13,6 +13,7 @@ import { setModelProgress } from "../../store/modelConfiguration/modelSlice";
 import axios from "axios";
 import Spinner from "../../components/ui/spinner/Spinner";
 import { maincontainer } from "@/configs/mainContainer";
+import SelectDays from "@/components/ui/SelectDays";
 
 interface MainContainerContext {
   current: HTMLDivElement | null;
@@ -23,17 +24,21 @@ const ConfigurationCard = ({
   categoryName,
   index,
   inventory,
-  title,
-  isConfigured,
+  days,
+  setDays,
 }: {
   categoryName: string;
   index: number;
   inventory: { days: number };
-  title: string;
-  isConfigured: boolean;
+  days: number[];
+  setDays: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   // const [name, setName] = useState(categoryName);
-
+  const setDaysState = (value: number) => {
+    const tempDays = [...days];
+    tempDays[index] = value;
+    setDays(tempDays);
+  };
   return (
     <div className="flex relative items-center justify-around py-2 mb-[6px] bg-gray-900  rounded-lg shadow-lg">
       {/* category Field */}
@@ -52,14 +57,16 @@ const ConfigurationCard = ({
       <div>
         <div className="relative inline-block w-32">
           {/* Dropdown button */}
-          <button
-            type="button"
-            className="w-full px-4 py-2  bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 text-center text-sm"
-          >
-            {categoryName !== ""
-              ? `${inventory.days} ${inventory.days === 1 ? "day" : "days"}`
-              : "Days"}
-          </button>
+          {days.length > index ? (
+            <SelectDays day={days[index]} handleDaysChanges={setDaysState} />
+          ) : (
+            <button
+              type="button"
+              className="w-full px-4 py-2  bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 text-center text-sm"
+            >
+              Days
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -84,6 +91,11 @@ const SalesPattern = () => {
   // if (!inventoryNorms.days) {
   //   inventoryNorms.days = salesPattern[0].inventory_days;
   // }
+  const daysforall = Array(categories.length).fill(
+    inventoryNorms.days ? inventoryNorms.days : 0
+  );
+
+  const [days, setDays] = useState(daysforall);
   const handleSubmit = async () => {
     setIsLoading(true);
     if (!inventoryNorms.days) {
@@ -97,7 +109,6 @@ const SalesPattern = () => {
       return;
     }
     // const salesPatternData = [];
-    const days = Array(categories.length).fill(inventoryNorms.days);
 
     // for (const category of categories) {
     //   salesPatternData.push({
@@ -109,6 +120,7 @@ const SalesPattern = () => {
     categories.forEach((category) => {
       categoryArr.push(category.category_name);
     });
+    console.log(days);
     await dispatch(
       addSalesPattern({ category_names: categoryArr, inventory_days: days })
     );
@@ -231,8 +243,8 @@ const SalesPattern = () => {
                 index={index}
                 inventory={inventoryNorms}
                 key={index}
-                title={`Location ${index + 1}`}
-                isConfigured={true}
+                days={days}
+                setDays={setDays}
               />
             ))}
             {/* <div

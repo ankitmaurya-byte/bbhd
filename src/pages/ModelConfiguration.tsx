@@ -17,8 +17,12 @@ import { useAppSelector } from "../store/reduxHooks";
 import UserCredentials from "./UserCredentials";
 import ModelRun from "./ModelRun";
 import { maincontainer } from "@/configs/mainContainer";
+import { StepperProgressContext } from "@/App";
 
 const ModelConfiguration = () => {
+  const { setActiveStep } = useContext(StepperProgressContext) as {
+    setActiveStep: (value: React.SetStateAction<number>) => void;
+  };
   const {
     location,
     pricemaster,
@@ -164,10 +168,13 @@ const ModelConfiguration = () => {
           ShipmentNorm && (
             <div className="relative flex w-full">
               <Button
-                onClick={() => handleNavigateBack(ModelRun)}
+                onClick={() => {
+                  setActiveStep((prev: number) => prev + 1);
+                  handleNavigateBack(ModelRun);
+                }}
                 className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
               >
-                Run Model
+                Next
               </Button>
             </div>
           )}
@@ -179,7 +186,11 @@ const ModelConfiguration = () => {
             icon={faCircleArrowLeft}
           />
           <Button
-            onClick={() => handleNavigateBack(UserCredentials)}
+            onClick={() => {
+              setActiveStep((prev: number) => prev - 1);
+
+              handleNavigateBack(UserCredentials);
+            }}
             className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
           >
             User Config

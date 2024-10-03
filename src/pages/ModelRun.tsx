@@ -125,7 +125,7 @@ const ModelRun = () => {
             className="bg-yellow-600 text-gray-800 text-2xl py-8 px-12 hover:bg-yellow-700 font-bold"
           >
             {" "}
-            RUN THE MODEL
+            preview the model
           </Button>
           <FontAwesomeIcon
             className="text-yellow-600 text-6xl font-bold"

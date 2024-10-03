@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { StepperProgressContext } from "../../App";
-import { useAppDispatch } from "../../store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../store/reduxHooks";
 // import { registerUser } from "../../store/userThunks";
 import UserCredentials from "../../pages/UserCredentials";
 import { useAlert } from "react-alert";
@@ -22,32 +22,41 @@ const SignUp = () => {
     setActiveStep: (value: React.SetStateAction<number>) => void;
   };
   const mainContent = useContext(maincontainer) as MainContainerContext;
-
+  const { user } = useAppSelector((state) => state.user);
   const alert = useAlert();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [naviagateNext, setNavigateNext] = useState(false);
-
+  const [password, setPassword] = useState(user.password);
+  const [confirmPassword, setConfirmPassword] = useState(user.password);
+  const [email, setEmail] = useState(user.email);
   const dispatch = useAppDispatch();
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = () => {
     event.preventDefault();
     setIsVisible(true);
-    const email = (event.currentTarget[0] as HTMLInputElement).value;
-    const password = (event.currentTarget[1] as HTMLInputElement).value;
-    const confirmPassword = (event.currentTarget[2] as HTMLInputElement).value;
+
     const data = new FormData();
     data.append("email", email);
     data.append("password", password);
     data.append("confirmPassword", confirmPassword);
+    const emailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
+
+    if (!emailRegex.test(email)) {
+      alert.removeAll();
+      alert.error("Please enter a valid Gmail address");
+      return;
+    }
     if (password !== confirmPassword) {
+      alert.removeAll();
       alert.error("password not matched");
       return;
     }
+
     // dispatch(registerUser(data));
     mainContent.setPages((prev) => [...prev, UserCredentials]);
     dispatch(setEmailPass({ email, password }));
+    setActiveStep((prev: number) => prev + 1);
     setNavigateNext(true);
-
     mainContent.current.scrollTo({
       left: mainContent.current.scrollWidth / mainContent.pages.length,
       behavior: "smooth",
@@ -125,14 +134,26 @@ const SignUp = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
+  const handelemailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const emailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
+    const email = e.target.value;
+    if (!emailRegex.test(email)) {
+      alert.removeAll();
+      alert.error("Please enter a valid Gmail address");
+    }
+  };
   return (
     <div className="h-full flex items-center justify-center">
       <div className="bg-gray-900/75 p-8 rounded-lg h-full shadow-lg max-w-sm w-full">
         <h2 className="text-2xl font-bold text-center mb-6 text-white">
           Sign Up
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+          className="space-y-4"
+        >
           {/* Email Field */}
           <div>
             <label
@@ -144,6 +165,9 @@ const SignUp = () => {
             <input
               type="email"
               id="email"
+              value={email}
+              onBlur={handelemailBlur}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Enter your email"
             />
@@ -160,6 +184,8 @@ const SignUp = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Enter your password"
             />
@@ -185,6 +211,8 @@ const SignUp = () => {
             </label>
             <input
               type={showConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               id="confirm-password"
               className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Confirm your password"
@@ -232,6 +260,7 @@ const SignUp = () => {
           <div>
             <button
               type="submit"
+              onClick={handleSubmit}
               className="w-full  bg-yellow-600 text-gray-800 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm  hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 font-bold focus:ring-indigo-500"
             >
               Sign Up

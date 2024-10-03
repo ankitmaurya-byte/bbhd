@@ -93,10 +93,12 @@ const ReviewCard = ({
   );
 };
 const CategoryMaster = () => {
-  const [numberOfCategory, setNumberOfCategory] = useState(8);
   const [isLoading, setIsLoading] = useState(false);
   const { status, categories } = useAppSelector(
     (state) => state.modelConfiguration.CategoryMaster
+  );
+  const [numberOfCategory, setNumberOfCategory] = useState(
+    Math.max(8, categories.length)
   );
   const [edit, setEdit] = useState(false);
   const dispatch = useAppDispatch();
@@ -133,14 +135,14 @@ const CategoryMaster = () => {
   const handelNavigateNext = () => {
     setIsLoading(true);
     console.log(allCategory);
-    // // const updatedCategories = [];
-    // // for (const category of allCategory) {
-    // //   if (category !== undefined) {
-    // //     updatedCategories.push(category);
-    // //   }
-    // // }
-    // // dispatch(addCategories(updatedCategories));
-    dispatch(setCategories(allCategory.slice(0, numberOfCategory)));
+    const updatedCategories = [];
+    for (const category of allCategory) {
+      if (category !== undefined) {
+        updatedCategories.push(category);
+      }
+    }
+    // dispatch(addCategories(updatedCategories));
+    dispatch(setCategories(updatedCategories.slice(0, numberOfCategory)));
     dispatch(setModelProgress("CategoryMaster"));
     dispatch(setCategoryStatus("idel"));
 
@@ -211,17 +213,17 @@ const CategoryMaster = () => {
                 />
               ))}
             {edit &&
-              [...Array(allCategory.length)].map((_, index) => (
-                <ReviewCard
-                  key={index}
-                  categoryName={
-                    allCategory[index].category_name
-                      ? allCategory[index].category_name
-                      : ""
-                  }
-                  index={index}
-                />
-              ))}
+              [...Array(allCategory.length)].map((_, index) => {
+                if (allCategory[index]) {
+                  return (
+                    <ReviewCard
+                      key={index}
+                      categoryName={allCategory[index].category_name}
+                      index={index}
+                    />
+                  );
+                }
+              })}
             {!edit && (
               <div
                 onClick={() => setNumberOfCategory((prev) => prev + 1)}

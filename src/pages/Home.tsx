@@ -163,7 +163,7 @@ const Home = () => {
     }
     console.log(document.cookie);
     setIsVisible(false);
-    setActiveStep((prev: number) => prev - 1);
+    setActiveStep(-1);
     dispatch(clearUser());
     dispatch(clearInfo());
     dispatch(clearCategories());
@@ -171,7 +171,6 @@ const Home = () => {
     dispatch(clearModelProcess());
     dispatch(clearWarehouse());
     dispatch(clearSalesPattern());
-
     setPages([Auth]);
     alert.success("User logged out successfully");
   };

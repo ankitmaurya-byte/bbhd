@@ -24,12 +24,16 @@ const InventoryNorms = () => {
   );
   const [navigateBack, setNavigateBack] = useState(false);
   const dispatch = useAppDispatch();
-  const [categoryDisable, setCategoryDisable] = useState(false);
   const alert = useAlert();
-  const [allWarehouseDisable, setAllWarehouseDisable] = useState(false);
   const mainContent = useContext(maincontainer) as MainContainerContext;
   const [normBasis, setNormsBasis] = useState(inventoryNorms.normbasis);
   const [level, setLevel] = useState(inventoryNorms.level);
+  const [categoryDisable, setCategoryDisable] = useState(
+    inventoryNorms.normbasis === "Sales Pattern" ? true : false
+  );
+  const [allWarehouseDisable, setAllWarehouseDisable] = useState(
+    inventoryNorms.level === "category" ? true : false
+  );
   const [days, setDays] = useState(inventoryNorms.days);
   const [warehouse, setWarehouse] = useState(inventoryNorms.warehouse);
   const handelNormBasis = (event: React.ChangeEvent<HTMLInputElement>) => {
