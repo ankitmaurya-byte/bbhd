@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supply chain re-imagined</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+  <style>
+    .checkmark {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: transparent;
+      border: 2px solid orange;
+      border-radius: 3px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-left: 8px;
+    }
+
+    .checked {
+      background-color: orange;
+      animation: scale-up 0.3s forwards;
+    }
+
+    @keyframes scale-up {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</html>

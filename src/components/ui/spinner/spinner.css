@@ -1,0 +1,77 @@
+:root {
+  --offset: 187;
+  --duration: 1.4s;
+}
+
+/* Wrapper for the full-page spinner */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2); /* Transparent background */
+  pointer-events: none; /* Disable pointer events */
+  user-select: none; /* Prevent text selection */
+  z-index: 9999; /* Make sure it's on top of all elements */
+}
+
+/* The spinner itself */
+.spinner {
+  animation: rotator var(--duration) linear infinite;
+}
+
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+/* The circle's path with dash and color animations */
+.path {
+  stroke-dasharray: var(--offset);
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: dash var(--duration) ease-in-out infinite,
+    colors calc(var(--duration) * 1) ease-in-out infinite;
+}
+
+/* Color-changing animation across colors */
+@keyframes colors {
+  0% {
+    stroke: #4285f4; /* Google blue */
+  }
+  25% {
+    stroke: #2974ec; /* Google light blue */
+  }
+  60% {
+    stroke: #166bf5; /* Deeper blue */
+  }
+  75% {
+    stroke: #de3e35; /* Red */
+  }
+  100% {
+    stroke: #e3291f; /* Darker red */
+  }
+}
+
+/* Stroke dash animation to simulate progress */
+@keyframes dash {
+  0% {
+    stroke-dashoffset: var(--offset);
+  }
+  50% {
+    stroke-dashoffset: calc(var(--offset) / 4);
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: var(--offset);
+    transform: rotate(450deg);
+  }
+}
