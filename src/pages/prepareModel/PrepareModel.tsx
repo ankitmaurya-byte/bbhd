@@ -67,7 +67,9 @@ const PrepareModel = (props: Props) => {
               <div>
                 {" "}
                 <Button
-                  onClick={() => {}}
+                  onClick={() => {
+                    navigate("/");
+                  }}
                   className="bg-yellow-600 text-gray-800 hover:bg-yellow-700  w-full relative p-6 font-bold m-auto"
                 >
                   Update | Edit <br />

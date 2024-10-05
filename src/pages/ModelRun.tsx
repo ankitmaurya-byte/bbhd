@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 // import { CloudUploadIcon } from "@heroicons/react/outline";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Auth from "./Auth";
 import {
   faAnglesRight,
   faCircleArrowLeft,
@@ -23,7 +24,8 @@ const ModelRun = () => {
   const { setActiveStep } = useContext(StepperProgressContext) as {
     setActiveStep: (value: React.SetStateAction<number>) => void;
   };
-
+  const mainContent = useContext(maincontainer) as MainContainerContext;
+  const [navigateBack, setNavigateBack] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   // const [fileType, setFileType] = useState("Xlxs");
@@ -72,9 +74,11 @@ const ModelRun = () => {
     }
     setIsLoading(false);
   };
-  const mainContent = useContext(maincontainer) as MainContainerContext;
-  const [navigateBack, setNavigateBack] = useState(false);
 
+  const handelNavigateuser = () => {
+    mainContent.setPages([ModelConfiguration]);
+    navigate("/user");
+  };
   const handleNavigateBack = (component: React.FC) => {
     setNavigateBack((prev) => !prev);
     mainContent.setPages((prev) => [...prev, component]);
@@ -123,7 +127,7 @@ const ModelRun = () => {
           <Button
             disabled={isLoading}
             // onClick={handlRun}
-            onClick={() => navigate("/user")}
+            onClick={handelNavigateuser}
             className="bg-yellow-600 text-gray-800 text-2xl py-8 px-12 hover:bg-yellow-700 font-bold"
           >
             {" "}

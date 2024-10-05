@@ -19,6 +19,7 @@ interface CounterState {
     | "unknown"
     | "succeeded"
     | "login"
+    | "logout"
     | "register"
     | "failed";
   error?: null | string;
@@ -59,11 +60,28 @@ const userSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
+    clearByUser: (state) => {
+      state.user = {
+        user_id: null,
+        password: "",
+        first_name: "",
+        last_name: "",
+        username: "",
+        role: "",
+        email: "",
+        companyid: null,
+      };
+      state.isAuthenticated = false;
+      state.status = "logout";
+      state.error = null;
+    },
     setEmailPass: (state, action) => {
       state.user.email = action.payload.email;
       state.user.password = action.payload.password;
     },
-
+    setUserStatus: (state, action) => {
+      state.status = action.payload;
+    },
     setUser: (state, action) => {
       state.user = action.payload;
       state.status = "idle";
@@ -180,5 +198,6 @@ export const { setInfoSliceStatus, setOrganisation, clearInfo } =
   oranisationSlice.actions;
 export const organisationReducer = oranisationSlice.reducer;
 // export const { increment, decrement, incrementByAmount } = userSlice.actions;
-export const { clearUser, setUser, setEmailPass } = userSlice.actions;
+export const { clearUser, setUserStatus, setUser, clearByUser, setEmailPass } =
+  userSlice.actions;
 export const userReducer = userSlice.reducer;

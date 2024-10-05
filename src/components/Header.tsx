@@ -94,7 +94,7 @@ const Header = ({ setPages, pages }: Props) => {
         <div className="h-full w-40">
           <img className="h-full w-full" src="/data_mingle.png" alt="" />
         </div>
-        {isVisible && <CustomizedSteppers />}
+        {!showPfp && isVisible && <CustomizedSteppers />}
         {pages[0] !== Auth && pages[0] !== UserCredentials && !showPfp ? (
           <div className=" p-4 ">
             <FontAwesomeIcon

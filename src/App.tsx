@@ -6,37 +6,118 @@ import { Route, Routes } from "react-router-dom";
 import PrepareModel from "./pages/prepareModel/PrepareModel";
 import RunModel from "./pages/prepareModel/RunModel";
 import ViewsOption from "./pages/prepareModel/ViewsOption";
+import axios from "axios";
+import Auth from "./pages/Auth";
+import ModelConfiguration from "./pages/ModelConfiguration";
+import { setOrganisation, setUser, setUserStatus } from "./store/slice";
+import { setsalesPattern } from "./store/modelConfiguration/salesPatternSlice";
+import { setCategories } from "./store/modelConfiguration/categorySlice";
+import { setReduxLocations } from "./store/modelConfiguration/locationSlice";
+import { useAppDispatch, useAppSelector } from "./store/reduxHooks";
+import Spinner from "./components/ui/spinner/Spinner";
+import Img from "./components/LasyLoading";
 export const StepperProgressContext = createContext({
   isVisible: false,
   setIsVisible: (value: boolean | ((prevState: boolean) => boolean)) => {},
   activeStep: 0,
   setActiveStep: (value: number | ((prevState: number) => number)) => {},
 });
+
 function App() {
+  const { status } = useAppSelector((state) => state.user);
   // const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [pages, setPages] = useState<React.FC[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const cookies = document.cookie.split("; ");
+  const user_id = cookies
+    .find((row) => row.startsWith("user_id="))
+    ?.split("=")[1];
+
+  const [pages, setPages] = useState<React.FC[]>(user_id ? [] : [Auth]);
   const [activeStep, setActiveStep] = useState(0);
   // useWebFontLoader();
+
+  const dispatch = useAppDispatch();
+  const loadUser = async () => {
+    try {
+      // const userid = document.cookie
+      //   .split(";")
+      //   .find((cookie) => cookie.trim().startsWith("token="))
+      // .split("=")[1];
+      // Get cookies for user_id and company_id
+
+      const response = await axios.get(`/api/user_details/${user_id}`);
+      console.log(response);
+      if (response.data) {
+        // setPages([InventoryNorms2]);
+        setIsVisible(true);
+        setActiveStep(1);
+        setPages([ModelConfiguration]);
+      } else {
+        setPages([Auth]);
+        // setPages([UserCredentials]);
+      }
+      setIsLoading(false);
+      dispatch(setReduxLocations(response.data.location_configs));
+      dispatch(setCategories(response.data.category_configs));
+      dispatch(setsalesPattern(response.data.category_configs));
+      dispatch(setUser(response.data.user));
+      dispatch(setOrganisation(response.data.company));
+    } catch (err) {
+      setPages([Auth]);
+      // setPages([UserCredentials]);
+      console.log(err);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (!user_id) {
+      setIsLoading(false);
+      return;
+    }
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    if (status === "logout") {
+      dispatch(setUserStatus("unknown"));
+      setPages([Auth]);
+      setActiveStep(0);
+      console.log(status);
+    }
+  }, [status]);
+
   useWebFontLoader();
   return (
-    <div className="relative">
-      <StepperProgressContext.Provider
-        value={{ isVisible, setIsVisible, activeStep, setActiveStep }}
-      >
-        <Header setPages={setPages} pages={pages} />
-        <Routes>
-          <Route
-            path="/"
-            element={<Home setPages={setPages} pages={pages} />}
+    <StepperProgressContext.Provider
+      value={{ isVisible, setIsVisible, activeStep, setActiveStep }}
+    >
+      <Header setPages={setPages} pages={pages} />
+      {!isLoading ? (
+        <div className="relative">
+          <Routes>
+            <Route
+              path="/"
+              element={<Home setPages={setPages} pages={pages} />}
+            />
+            <Route path="/user" element={<PrepareModel />} />
+            <Route path="/runmodel" element={<RunModel />} />
+            <Route path="/chart" element={<ViewsOption />} />
+          </Routes>
+        </div>
+      ) : (
+        <div>
+          <div className="absolute inset-0 h-full w-full bg-[rgb(40,50,86)]/75 -z-10"></div>
+          <Img
+            src="/background-image.jpg"
+            alt="Product Image"
+            className="absolute -z-20 inset-0 h-full w-full object-cover"
           />
-          <Route path="/user" element={<PrepareModel />} />
-          <Route path="/runmodel" element={<RunModel />} />
-          <Route path="/chart" element={<ViewsOption />} />
-        </Routes>
-      </StepperProgressContext.Provider>
-      {/* <Footer /> */}
-    </div>
+          <Spinner isLoading={isLoading} />
+          {/* <div className="animate-spin rounded-full h-32 w-32  border-t-2 mb-64 border-b-8 border-blue-500"></div> */}
+        </div>
+      )}
+    </StepperProgressContext.Provider>
   );
 }
 
