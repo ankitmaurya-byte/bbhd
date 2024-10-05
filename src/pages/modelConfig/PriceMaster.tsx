@@ -32,7 +32,7 @@ const PriceMaster = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [fileType, setFileType] = useState("xlsx");
-  const [priceBasedOn, setPriceBasedOn] = useState(["ton"]);
+  const [priceBasedOn, setPriceBasedOn] = useState("KG");
   const dispatch = useAppDispatch();
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
@@ -51,23 +51,29 @@ const PriceMaster = () => {
   const { status, error } = useAppSelector(
     (state) => state.modelConfiguration.PriceMaster
   );
+  const { inventoryNorms } = useAppSelector(
+    (state) => state.modelConfiguration.InventoryNorms
+  );
+  const { transferbased } = useAppSelector(
+    (state) => state.modelConfiguration.ShipmentNorms
+  );
 
   const cities = City.getCitiesOfCountry("IN");
   const allCity = cities?.map((city) => city.name.toLowerCase());
-  const handlePriceBasedOnChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const checkValue = event.target.value;
-    setIsUploaded(false);
-    setTableData([]);
-    if (priceBasedOn.includes(checkValue)) {
-      const temp = priceBasedOn.filter((value) => value !== checkValue);
-      setPriceBasedOn(temp);
-    } else {
-      const temp = [...priceBasedOn, checkValue];
-      setPriceBasedOn(temp);
-    }
-  };
+  // const handlePriceBasedOnChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const checkValue = event.target.value;
+  //   setIsUploaded(false);
+  //   setTableData([]);
+  //   if (priceBasedOn.includes(checkValue)) {
+  //     const temp = priceBasedOn.filter((value) => value !== checkValue);
+  //     setPriceBasedOn(temp);
+  //   } else {
+  //     const temp = [...priceBasedOn, checkValue];
+  //     setPriceBasedOn(temp);
+  //   }
+  // };
   const checkNameValidation = (colName: string, colIndex: number) => {
     const rateTypeNames: string[] = [];
     priceBasedOn.forEach((type) => {
@@ -266,6 +272,16 @@ const PriceMaster = () => {
           .find((row) => row.startsWith("company_id="))
           ?.split("=")[1]
       );
+      const masterConfig = await axios.post("/api/master_config/", {
+        user_id,
+        company_id,
+        normbasis: inventoryNorms.normbasis,
+        level:
+          inventoryNorms.level.charAt(0).toUpperCase() +
+          inventoryNorms.level.slice(1),
+        transportation_type: transferbased,
+        UOM: priceBasedOn,
+      });
       const response = await axios.post(
         "/api/shipment_price_upload",
         formData,
@@ -279,9 +295,12 @@ const PriceMaster = () => {
           },
         }
       );
-      console.log(response);
 
       if (response.status === 200) {
+        if (masterConfig.status !== 200) {
+          alert.error("Something went wrong in master configuration");
+          return;
+        }
         dispatch(setModelProgress("pricemaster"));
         dispatch(setPriceMasterStatus("idel"));
         console.log("Sgsg");
@@ -429,9 +448,9 @@ const PriceMaster = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  value="kg"
-                  checked={priceBasedOn.includes("kg")}
-                  onChange={handlePriceBasedOnChange}
+                  value="KG"
+                  checked={priceBasedOn === "KG"}
+                  onChange={(e) => setPriceBasedOn(e.target.value)}
                   className="form-checkbox text-orange-500"
                 />
                 <span className="ml-2">Kg</span>
@@ -439,9 +458,9 @@ const PriceMaster = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  value="each"
-                  checked={priceBasedOn.includes("each")}
-                  onChange={handlePriceBasedOnChange}
+                  value="EACH"
+                  checked={priceBasedOn === "EACH"}
+                  onChange={(e) => setPriceBasedOn(e.target.value)}
                   className="form-checkbox text-orange-500"
                 />
                 <span className="ml-2">Each</span>
@@ -449,9 +468,9 @@ const PriceMaster = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  value="ton"
-                  checked={priceBasedOn.includes("ton")}
-                  onChange={handlePriceBasedOnChange}
+                  value="TON"
+                  checked={priceBasedOn === "TON"}
+                  onChange={(e) => setPriceBasedOn(e.target.value)}
                   className="form-checkbox text-orange-500"
                 />
                 <span className="ml-2">Ton</span>
@@ -459,9 +478,9 @@ const PriceMaster = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  value="ltrs"
-                  checked={priceBasedOn.includes("ltrs")}
-                  onChange={handlePriceBasedOnChange}
+                  value="LTR"
+                  checked={priceBasedOn === "LTR"}
+                  onChange={(e) => setPriceBasedOn(e.target.value)}
                   className="form-checkbox text-orange-500"
                 />
                 <span className="ml-2">Ltrs</span>
@@ -469,9 +488,9 @@ const PriceMaster = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  value="case"
-                  checked={priceBasedOn.includes("case")}
-                  onChange={handlePriceBasedOnChange}
+                  value="CASE"
+                  checked={priceBasedOn === "CASE"}
+                  onChange={(e) => setPriceBasedOn(e.target.value)}
                   className="form-checkbox text-orange-500"
                 />
                 <span className="ml-2">Case</span>

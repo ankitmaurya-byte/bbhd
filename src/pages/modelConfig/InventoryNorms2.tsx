@@ -15,6 +15,7 @@ import SelectDays from "../../components/ui/SelectDays";
 import axios from "axios";
 import Spinner from "../../components/ui/spinner/Spinner";
 import { maincontainer } from "@/configs/mainContainer";
+import { useAlert } from "react-alert";
 interface MainContainerContext {
   current: HTMLDivElement | null;
   pages: React.FC[];
@@ -83,6 +84,7 @@ const ConfigurationCard = ({
   );
 };
 const InventoryNorms2 = () => {
+  const alert = useAlert();
   const [isLoading, setIsLoading] = useState(false);
   const [numberOfWarehouse, setNumberOfWarehouse] = useState(8);
   const dispatch = useAppDispatch();
@@ -94,6 +96,9 @@ const InventoryNorms2 = () => {
   );
   const { inventoryNorms } = useAppSelector(
     (state) => state.modelConfiguration.InventoryNorms
+  );
+  const { transferbased } = useAppSelector(
+    (state) => state.modelConfiguration.ShipmentNorms
   );
 
   const mainContent = useContext(maincontainer) as MainContainerContext;
@@ -122,7 +127,7 @@ const InventoryNorms2 = () => {
         inventory_days: inventoryDays,
       })
     );
-    dispatch(clearInventoryNorms());
+    // dispatch(clearInventoryNorms());
     const user_id = Number(
       document.cookie
         .split("; ")
@@ -137,14 +142,21 @@ const InventoryNorms2 = () => {
     );
     console.log(company_id);
     console.log(user_id);
-    await axios.post("/api/inventory_norms/", {
-      user_id,
-      company_id,
-      normbasis: inventoryNorms.normbasis,
-      level:
-        inventoryNorms.level.charAt(0).toUpperCase() +
-        inventoryNorms.level.slice(1),
-    });
+    try {
+      await axios.post("/api/master_config/", {
+        user_id,
+        company_id,
+        normbasis: inventoryNorms.normbasis,
+        level:
+          inventoryNorms.level.charAt(0).toUpperCase() +
+          inventoryNorms.level.slice(1),
+        transportation_type: transferbased,
+        UOM: "",
+      });
+    } catch (error) {
+      alert.error("Error posting to master_config:");
+      console.error("Error posting to master_config:", error);
+    }
   };
   useEffect(() => {
     if (status === "idel") {

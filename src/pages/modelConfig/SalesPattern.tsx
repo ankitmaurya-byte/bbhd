@@ -88,6 +88,9 @@ const SalesPattern = () => {
   const { inventoryNorms } = useAppSelector(
     (state) => state.modelConfiguration.InventoryNorms
   );
+  const { transferbased } = useAppSelector(
+    (state) => state.modelConfiguration.ShipmentNorms
+  );
   // if (!inventoryNorms.days) {
   //   inventoryNorms.days = salesPattern[0].inventory_days;
   // }
@@ -137,14 +140,21 @@ const SalesPattern = () => {
         .find((row) => row.startsWith("company_id="))
         ?.split("=")[1]
     );
-    await axios.post("/api/inventory_norms/", {
-      user_id,
-      company_id,
-      normbasis: inventoryNorms.normbasis,
-      level:
-        inventoryNorms.level.charAt(0).toUpperCase() +
-        inventoryNorms.level.slice(1),
-    });
+    try {
+      await axios.post("/api/inventory_norms/", {
+        user_id,
+        company_id,
+        normbasis: inventoryNorms.normbasis,
+        level:
+          inventoryNorms.level.charAt(0).toUpperCase() +
+          inventoryNorms.level.slice(1),
+        transportation_type: transferbased,
+        UOM: "",
+      });
+    } catch (error) {
+      console.error("Error posting inventory norms:", error);
+      // Handle the error appropriately, e.g., show an error message to the user
+    }
     // setNavigateBack((prev) => !prev);
     // mainContent.setPages((prev) => [...prev, ModelConfiguration]);
     // mainContent.current.scrollTo({

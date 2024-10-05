@@ -6,7 +6,7 @@
 /* Wrapper for the full-page spinner */
 .spinner-overlay {
   position: fixed;
-  top: 0;
+  top: 12vh;
   left: 0;
   width: 100vw;
   height: 100vh;

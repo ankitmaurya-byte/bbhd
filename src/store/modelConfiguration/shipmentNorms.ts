@@ -4,14 +4,10 @@ import { addShipmentNorms } from "../userThunks";
 interface ModelState {
   status?: string;
   error?: string | null;
-  shipmentNorms: {
-    transferbased: string;
-  };
+  transferbased: string;
 }
 const initialShipmentNormsState: ModelState = {
-  shipmentNorms: {
-    transferbased: "",
-  },
+  transferbased: "",
 };
 const { actions, reducer } = createSlice({
   name: "shipment",
@@ -29,7 +25,7 @@ const { actions, reducer } = createSlice({
       .addCase(addShipmentNorms.fulfilled, (state, action) => {
         state.status = "succeeded";
         console.log(action.payload);
-        state.shipmentNorms = action.payload;
+        state.transferbased = action.payload;
         state.error = null;
         // state.isAuthenticated = true;
       })

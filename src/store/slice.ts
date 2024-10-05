@@ -13,7 +13,14 @@ interface CounterState {
     email: string;
     companyid: number | null;
   };
-  status?: "idle" | "loading" | "succeeded" | "login" | "register" | "failed";
+  status?:
+    | "idle"
+    | "loading"
+    | "unknown"
+    | "succeeded"
+    | "login"
+    | "register"
+    | "failed";
   error?: null | string;
   isAuthenticated: boolean;
 }
@@ -30,7 +37,7 @@ const initialState: CounterState = {
     email: "",
     companyid: null,
   },
-  status: "idle",
+  status: "unknown",
   isAuthenticated: false,
 };
 const userSlice = createSlice({
@@ -59,6 +66,7 @@ const userSlice = createSlice({
 
     setUser: (state, action) => {
       state.user = action.payload;
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {

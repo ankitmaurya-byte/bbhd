@@ -32,7 +32,9 @@ const UserCredentials = () => {
   const { status: userStatus, user } = useAppSelector((state) => state.user);
   const mainContent = useContext(maincontainer) as MainContainerContext;
   const alert = useAlert();
-  const { setActiveStep } = useContext(StepperProgressContext) as {
+  const { setActiveStep, setIsVisible } = useContext(
+    StepperProgressContext
+  ) as {
     setActiveStep: (value: React.SetStateAction<number>) => void;
   };
   const dispatch = useAppDispatch();
@@ -728,7 +730,7 @@ const UserCredentials = () => {
             icon={faArrowRight}
           />
         </div>
-        {userStatus === "succeeded" ? (
+        {userStatus !== "unknown" ? (
           <div className="relative flex w-full">
             <Button
               disabled={isLoading}
@@ -751,7 +753,7 @@ const UserCredentials = () => {
               disabled={isLoading}
               className="bg-yellow-600 text-gray-800 hover:bg-yellow-700 font-bold w-32 m-auto"
               onClick={() => {
-                setActiveStep((prev: number) => prev - 1);
+                setIsVisible(false);
                 handleNavigateBack(Auth);
               }}
             >

@@ -9,11 +9,11 @@ interface ModelState {
 }
 
 const initialModelState: ModelState = {
-  location: false,
-  CategoryMaster: false,
-  pricemaster: false,
-  InventoryNorms: false,
-  ShipmentNorm: false,
+  location: true,
+  CategoryMaster: true,
+  pricemaster: true,
+  InventoryNorms: true,
+  ShipmentNorm: true,
 };
 const { actions, reducer } = createSlice({
   name: "modelConfProgress",

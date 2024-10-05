@@ -33,7 +33,6 @@ const SignUp = () => {
   const dispatch = useAppDispatch();
   const handleSubmit = () => {
     event.preventDefault();
-    setIsVisible(true);
 
     const data = new FormData();
     data.append("email", email);
@@ -55,7 +54,7 @@ const SignUp = () => {
     // dispatch(registerUser(data));
     mainContent.setPages((prev) => [...prev, UserCredentials]);
     dispatch(setEmailPass({ email, password }));
-    setActiveStep((prev: number) => prev + 1);
+    // setActiveStep((prev: number) => prev + 1);
     setNavigateNext(true);
     mainContent.current.scrollTo({
       left: mainContent.current.scrollWidth / mainContent.pages.length,
@@ -82,6 +81,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (naviagateNext && mainContent.current) {
+      setIsVisible(true);
       setNavigateNext(false);
       setIsVisible(true);
       console.log(mainContent.pages);

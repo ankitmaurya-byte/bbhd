@@ -349,14 +349,29 @@ export const addShipmentNorms = createAsyncThunk(
   "config/ShipmentNorms",
   async (
     shipmentNorms: {
-      transferbased: string;
+      normbasis: string;
+      level: string;
+      transportation_type: string;
+      UOM: string;
     },
     thunkAPI
   ) => {
     try {
+      const user_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("user_id="))
+          ?.split("=")[1]
+      );
+      const company_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("company_id="))
+          ?.split("=")[1]
+      );
       const response = await axios.post(
-        "/api/addshipmentnorms",
-        shipmentNorms,
+        "/api/master_config",
+        { ...shipmentNorms, user_id, company_id },
         {
           headers: {
             "Content-Type": "application/json",
@@ -364,7 +379,7 @@ export const addShipmentNorms = createAsyncThunk(
         }
       );
       console.log(response);
-      return response.data;
+      return response.data.transportation_type;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         return thunkAPI.rejectWithValue(error.response?.data || error.message);

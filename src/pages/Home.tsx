@@ -4,7 +4,7 @@ import ModelConfiguration from "./ModelConfiguration";
 import Auth from "./Auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { clearInfo, clearUser, setOrganisation, setUser } from "../store/slice";
-import { useAppDispatch } from "../store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../store/reduxHooks";
 import Img from "../components/LasyLoading";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -34,8 +34,11 @@ import Spinner from "@/components/ui/spinner/Spinner";
 //   setPages: React.Dispatch<React.SetStateAction<React.FC[]>>;
 // }
 // const maincontainer = createContext<MainContainerContext | null>(null);
-
-const Home = () => {
+type Props = {
+  setPages: React.Dispatch<React.SetStateAction<React.FC[]>>;
+  pages: React.FC[];
+};
+const Home = ({ setPages, pages }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // const [smapleImages, setSampleImages] = useState([])
@@ -43,8 +46,7 @@ const Home = () => {
 
   // Create the pages object with the correct types.
   // const [pages, setPages] = useState<React.ComponentType<any>[]>([]);
-  const [pages, setPages] = useState<React.FC[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { status } = useAppSelector((state) => state.user);
   const alert = useAlert();
   const { setActiveStep, setIsVisible } = useContext(
     StepperProgressContext
@@ -79,8 +81,6 @@ const Home = () => {
   //   }
   // };
   const loadUser = async () => {
-    setIsLoading(true);
-
     try {
       // const userid = document.cookie
       //   .split(";")
@@ -94,86 +94,52 @@ const Home = () => {
 
       if (!user_id) {
         setPages([Auth]);
-        setIsLoading(false);
         return;
       }
-
+      setIsLoading(true);
       const response = await axios.get(`/api/user_details/${user_id}`);
       console.log(response);
-      dispatch(setUser(response.data.user));
-      dispatch(setOrganisation(response.data.company));
-      dispatch(setReduxLocations(response.data.location_configs));
-      dispatch(setCategories(response.data.category_configs));
-      dispatch(setsalesPattern(response.data.category_configs));
       if (response.data) {
         // setPages([InventoryNorms2]);
+        setIsVisible(true);
+        setActiveStep(1);
         setPages([ModelConfiguration]);
       } else {
         setPages([Auth]);
         // setPages([UserCredentials]);
       }
-      setLoading(false);
+      setIsLoading(false);
+      dispatch(setReduxLocations(response.data.location_configs));
+      dispatch(setCategories(response.data.category_configs));
+      dispatch(setsalesPattern(response.data.category_configs));
+      dispatch(setUser(response.data.user));
+      dispatch(setOrganisation(response.data.company));
     } catch (err) {
       setPages([Auth]);
       // setPages([UserCredentials]);
       console.log(err);
-      setLoading(false);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   useEffect(() => {
-    loadUser();
+    if (status === "unknown") {
+      loadUser();
+    }
     // setPages([
     //   Auth,
-    //   // LocationMaster,
-    //   // UserCredentials,
-    //   //   // ModelConfiguration,
-    //   //   // CategoryMaster,
-    //   //   // PriceMaster,
-    //   //   // InventoryNorms,
-    //   //   // InventoryNorms2,
-    //   //   // SalesPattern,
-    //   //   // ShipmentNorms,
-    //   //   // ModelRun,
+    // LocationMaster,
+    // UserCredentials,
+    // ModelConfiguration,
+    // CategoryMaster,
+    // PriceMaster,
+    // InventoryNorms,
+    // InventoryNorms2,
+    // SalesPattern,
+    // ShipmentNorms,
+    // ModelRun,
     // ]);
-  }, []);
-  const handleLogout = () => {
-    // axios
-    //   .post("/api/logout")
-    //   .then(() => {
-    //     setIsVisible(false);
-    //     setActiveStep((prev: number) => prev - 1);
-    //     dispatch(clearUser());
-    //     dispatch(clearInfo());
-    //     setPages([Auth]);
-    //     alert.success("User logged out successfully");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Logout failed:", error);
-    //     alert.error("Logout failed. Please try again.");
-    //   });
-    // document.cookie = "";
-    const cookies = document.cookie.split(";");
-    console.log(cookies);
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i];
-      const eqPos = cookie.indexOf("=");
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-    }
-    console.log(document.cookie);
-    setIsVisible(false);
-    setActiveStep(-1);
-    dispatch(clearUser());
-    dispatch(clearInfo());
-    dispatch(clearCategories());
-    dispatch(clearLocation());
-    dispatch(clearModelProcess());
-    dispatch(clearWarehouse());
-    dispatch(clearSalesPattern());
-    setPages([Auth]);
-    alert.success("User logged out successfully");
-  };
+  }, [status]);
+
   const ref = useRef<HTMLDivElement>(null);
 
   return (
@@ -195,21 +161,7 @@ const Home = () => {
           className={`flex items-center mt-[12vh] h-[88vh]`}
           style={{ width: `${pages.length * 100}%` }}
         >
-          {pages[0] !== Auth && (
-            <div className="absolute top-5 right-5">
-              <FontAwesomeIcon
-                icon={faRightFromBracket}
-                size="2xl"
-                style={{
-                  color: "#ff0000",
-                  transition: "color 0.3s",
-                  cursor: "pointer",
-                }}
-                onClick={handleLogout}
-              />
-            </div>
-          )}
-          {!loading ? (
+          {!isLoading ? (
             <maincontainer.Provider
               value={{ current: ref.current, pages, setPages }}
             >
