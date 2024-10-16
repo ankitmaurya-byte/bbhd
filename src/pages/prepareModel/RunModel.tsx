@@ -34,19 +34,6 @@ const RunModel = (props: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // const [fileType, setFileType] = useState("Xlxs");
-  // const [priceBasedOn, setPriceBasedOn] = useState("Ton");
-
-  // const handleFileTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setFileType(event.target.value);
-  // };
-
-  // const handlePriceBasedOnChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   setPriceBasedOn(event.target.value);
-  // };
-
   const handlRun = async () => {
     setIsLoading(true);
     try {
@@ -80,6 +67,10 @@ const RunModel = (props: Props) => {
       console.error("Error running model:", error);
     }
     setIsLoading(false);
+  };
+  const handleForcastUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Access the files from the input
+    const files = e.target.files;
   };
   const mainContent = useContext(maincontainer) as MainContainerContext;
   const dispatch = useAppDispatch();
@@ -148,37 +139,89 @@ const RunModel = (props: Props) => {
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Sales File:</div>
                   <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg ">Choose file</div>
-                    <Button className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end hover:bg-yellow-700 font-bold">
+                    <div className="text-lg">Choose file</div>
+
+                    {/* Label wrapped around Button for file input */}
+                    <label
+                      htmlFor="file-upload"
+                      className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
+                    >
                       Browse
-                    </Button>
+                    </label>
+
+                    {/* Hidden file input */}
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                    />
                   </div>
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Forecast File:</div>
                   <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg ">Choose file</div>
-                    <Button className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end hover:bg-yellow-700 font-bold">
+                    <div className="text-lg">Choose file</div>
+
+                    {/* Label wrapped around Button for file input */}
+                    <label
+                      htmlFor="file-upload"
+                      className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
+                    >
                       Browse
-                    </Button>
+                    </label>
+
+                    {/* Hidden file input */}
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      onChange={handleForcastUpload} // Optional: Handle file selection
+                    />
                   </div>
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Inventory File:</div>
                   <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg ">Choose file</div>
-                    <Button className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end hover:bg-yellow-700 font-bold">
+                    <div className="text-lg">Choose file</div>
+
+                    {/* Label wrapped around Button for file input */}
+                    <label
+                      htmlFor="file-upload"
+                      className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
+                    >
                       Browse
-                    </Button>
+                    </label>
+
+                    {/* Hidden file input */}
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                    />
                   </div>
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Intransit File:</div>
                   <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg ">Choose file</div>
-                    <Button className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end hover:bg-yellow-700 font-bold">
+                    <div className="text-lg">Choose file</div>
+
+                    {/* Label wrapped around Button for file input */}
+                    <label
+                      htmlFor="file-upload"
+                      className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
+                    >
                       Browse
-                    </Button>
+                    </label>
+
+                    {/* Hidden file input */}
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                    />
                   </div>
                 </div>
               </div>

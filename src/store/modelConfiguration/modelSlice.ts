@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ModelState {
+export interface ModelState {
   location: boolean;
   CategoryMaster: boolean;
   pricemaster: boolean;
@@ -9,11 +9,11 @@ interface ModelState {
 }
 
 const initialModelState: ModelState = {
-  location: true,
-  CategoryMaster: true,
-  pricemaster: true,
-  InventoryNorms: true,
-  ShipmentNorm: true,
+  location: false,
+  CategoryMaster: false,
+  pricemaster: false,
+  InventoryNorms: false,
+  ShipmentNorm: false,
 };
 const { actions, reducer } = createSlice({
   name: "modelConfProgress",

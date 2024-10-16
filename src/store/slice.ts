@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addOrganisationDetails, loginUser, registerUser } from "./userThunks";
 
 // Define a type for the slice state
-interface CounterState {
+export interface CounterState {
   user: {
     user_id: number | null;
     password: string;
@@ -104,11 +104,9 @@ const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        return {
-          ...state,
-          ...action.payload,
-          status: "succeeded",
-        };
+        state.user = action.payload;
+        state.status = "login";
+        state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         console.log(action);
@@ -120,7 +118,7 @@ const userSlice = createSlice({
       });
   },
 });
-interface UserState {
+export interface UserState {
   status?: string;
   error?: null | string;
 

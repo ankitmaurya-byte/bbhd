@@ -16,13 +16,23 @@ import { setReduxLocations } from "./store/modelConfiguration/locationSlice";
 import { useAppDispatch, useAppSelector } from "./store/reduxHooks";
 import Spinner from "./components/ui/spinner/Spinner";
 import Img from "./components/LasyLoading";
+import ShipmentChart from "./pages/charts/Shipment";
 export const StepperProgressContext = createContext({
   isVisible: false,
   setIsVisible: (value: boolean | ((prevState: boolean) => boolean)) => {},
   activeStep: 0,
   setActiveStep: (value: number | ((prevState: number) => number)) => {},
 });
-
+const useWebFontLoader = () => {
+  useEffect(() => {
+    webfont.load({
+      google: {
+        families: ["Roboto", "Open Sans", "Lato", "Montserrat", "Merriweather"],
+      },
+    });
+    // Add any other initialization logic here if needed
+  }, []);
+};
 function App() {
   const { status } = useAppSelector((state) => state.user);
   // const [count, setCount] = useState(0);
@@ -45,7 +55,7 @@ function App() {
       //   .find((cookie) => cookie.trim().startsWith("token="))
       // .split("=")[1];
       // Get cookies for user_id and company_id
-
+      console.log(user_id);
       const response = await axios.get(`/api/user_details/${user_id}`);
       console.log(response);
       if (response.data) {
@@ -70,14 +80,14 @@ function App() {
       setIsLoading(false);
     }
   };
+  useWebFontLoader();
   useEffect(() => {
     if (!user_id) {
       setIsLoading(false);
-      return;
+    } else {
+      loadUser();
     }
-    loadUser();
   }, []);
-
   useEffect(() => {
     if (status === "logout") {
       dispatch(setUserStatus("unknown"));
@@ -87,49 +97,36 @@ function App() {
     }
   }, [status]);
 
-  useWebFontLoader();
   return (
     <StepperProgressContext.Provider
       value={{ isVisible, setIsVisible, activeStep, setActiveStep }}
     >
       <Header setPages={setPages} pages={pages} />
-      {!isLoading ? (
-        <div className="relative">
-          <Routes>
-            <Route
-              path="/"
-              element={<Home setPages={setPages} pages={pages} />}
-            />
-            <Route path="/user" element={<PrepareModel />} />
-            <Route path="/runmodel" element={<RunModel />} />
-            <Route path="/chart" element={<ViewsOption />} />
-          </Routes>
-        </div>
-      ) : (
+      {isLoading && (
         <div>
-          <div className="absolute inset-0 h-full w-full bg-[rgb(40,50,86)]/75 -z-10"></div>
+          <div className="absolute inset-0 h-full w-full z-50"></div>
           <Img
             src="/background-image.jpg"
             alt="Product Image"
             className="absolute -z-20 inset-0 h-full w-full object-cover"
           />
           <Spinner isLoading={isLoading} />
-          {/* <div className="animate-spin rounded-full h-32 w-32  border-t-2 mb-64 border-b-8 border-blue-500"></div> */}
         </div>
       )}
+      <div className="relative">
+        <Routes>
+          <Route
+            path="/"
+            element={<Home setPages={setPages} pages={pages} />}
+          />
+          <Route path="/user" element={<PrepareModel />} />
+          <Route path="/runmodel" element={<RunModel />} />
+          <Route path="/chart" element={<ViewsOption />} />
+          {/* <Route path="/shipment" element={<ShipmentChart />} /> */}
+        </Routes>
+      </div>
     </StepperProgressContext.Provider>
   );
 }
-
-const useWebFontLoader = () => {
-  useEffect(() => {
-    webfont.load({
-      google: {
-        families: ["Roboto", "Open Sans", "Lato", "Montserrat", "Merriweather"],
-      },
-    });
-    // Add any other initialization logic here if needed
-  }, []);
-};
 
 export default App;

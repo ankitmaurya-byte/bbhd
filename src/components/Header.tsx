@@ -27,7 +27,7 @@ const Header = ({ setPages, pages }: Props) => {
   );
   const alert = useAlert();
   const location = useLocation();
-  console.log(location.pathname);
+
   const [showPfp, setShowPfp] = useState(false);
   useEffect(() => {
     setShowPfp(location.pathname !== "/");
@@ -88,15 +88,18 @@ const Header = ({ setPages, pages }: Props) => {
 
   return (
     <div
-      className={`h-[12vh] ${show} bg-[rgb(42,5,114)] fixed left-0 w-full transition-all ease-in-out duration-300`}
+      className={`h-[12vh] z-50 ${show} bg-[rgb(42,5,114)] fixed left-0 w-full transition-all ease-in-out duration-300`}
     >
       <ContentWrapper className="h-full flex justify-between items-center">
         <div className="h-full w-40">
           <img className="h-full w-full" src="/data_mingle.png" alt="" />
         </div>
         {!showPfp && isVisible && <CustomizedSteppers />}
-        {pages[0] !== Auth && pages[0] !== UserCredentials && !showPfp ? (
-          <div className=" p-4 ">
+        {pages.length > 0 &&
+        pages[0] !== Auth &&
+        pages[0] !== UserCredentials &&
+        !showPfp ? (
+          <div className=" p-4" onClick={handleLogout}>
             <FontAwesomeIcon
               icon={faRightFromBracket}
               size="2xl"
@@ -105,7 +108,6 @@ const Header = ({ setPages, pages }: Props) => {
                 transition: "color 0.3s",
                 cursor: "pointer",
               }}
-              onClick={handleLogout}
             />
           </div>
         ) : (

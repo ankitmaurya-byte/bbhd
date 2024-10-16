@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addShipmentNorms } from "../userThunks";
 
-interface ModelState {
+export interface ModelState {
   status?: string;
   error?: string | null;
   transferbased: string;

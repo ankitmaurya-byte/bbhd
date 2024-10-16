@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addLocations } from "../userThunks";
 
-interface ModelState {
+export interface ModelState {
   status?: string;
   error?: string;
   locations: {

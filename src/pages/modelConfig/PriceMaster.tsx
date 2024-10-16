@@ -76,25 +76,25 @@ const PriceMaster = () => {
   // };
   const checkNameValidation = (colName: string, colIndex: number) => {
     const rateTypeNames: string[] = [];
-    priceBasedOn.forEach((type) => {
-      switch (type) {
-        case "kg":
-          rateTypeNames.push("rate_per_kg");
-          break;
-        case "case":
-          rateTypeNames.push("rate_per_case");
-          break;
-        case "ltrs":
-          rateTypeNames.push("rate_per_ltr", "rate_per_ltrs");
-          break;
-        case "ton":
-          rateTypeNames.push("rate_per_ton");
-          break;
-        case "each":
-          rateTypeNames.push("rate_per_each");
-          break;
-      }
-    });
+    // priceBasedOn.forEach((type) => {
+    //   switch (type) {
+    //     case "kg":
+    //       rateTypeNames.push("rate_per_kg");
+    //       break;
+    //     case "case":
+    //       rateTypeNames.push("rate_per_case");
+    //       break;
+    //     case "ltrs":
+    //       rateTypeNames.push("rate_per_ltr", "rate_per_ltrs");
+    //       break;
+    //     case "ton":
+    //       rateTypeNames.push("rate_per_ton");
+    //       break;
+    //     case "each":
+    //       rateTypeNames.push("rate_per_each");
+    //       break;
+    //   }
+    // });
     if (colIndex === 0 && colName !== "from_location") {
       alert.error("table first column name should be from_location");
       return true;
@@ -282,6 +282,9 @@ const PriceMaster = () => {
         transportation_type: transferbased,
         UOM: priceBasedOn,
       });
+
+      console.log("post request started.....");
+
       const response = await axios.post(
         "/api/shipment_price_upload",
         formData,
@@ -295,8 +298,9 @@ const PriceMaster = () => {
           },
         }
       );
-
+      console.log("post request end.....");
       if (response.status === 200) {
+        console.log("post request end.....");
         if (masterConfig.status !== 200) {
           alert.error("Something went wrong in master configuration");
           return;

@@ -6,7 +6,7 @@ import {
   // addWarehouse,
 } from "../userThunks";
 
-interface ModelState {
+export interface ModelState {
   status?: string;
   error?: string | null;
   shipmentPrice: [];

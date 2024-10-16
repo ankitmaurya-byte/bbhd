@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./store/store.ts";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
+import axios from "axios";
 // import axios from "axios";
 
 // axios.defaults.baseURL = "http://localhost:5000";
@@ -17,6 +18,8 @@ const options = {
   offset: "30px",
   transition: transitions.SCALE,
 };
+axios.defaults.baseURL =
+  "https://fastapi-dev-1-hneke7a2fvf0hyba.eastus-01.azurewebsites.net/";
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <StrictMode>

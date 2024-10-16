@@ -135,7 +135,7 @@ const SignUp = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
   const handelemailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const emailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
+    const emailRegex = /^([a-zA-Z0-9.]+@gmail\.com)?$/;
     const email = e.target.value;
     if (!emailRegex.test(email)) {
       alert.removeAll();
@@ -168,7 +168,7 @@ const SignUp = () => {
               value={email}
               onBlur={handelemailBlur}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder:text-[16px] "
               placeholder="Enter your email"
             />
           </div>
@@ -186,7 +186,7 @@ const SignUp = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-[16px] "
               placeholder="Enter your password"
             />
             <div
@@ -214,7 +214,7 @@ const SignUp = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               id="confirm-password"
-              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder:text-[16px] "
               placeholder="Confirm your password"
             />
             <div

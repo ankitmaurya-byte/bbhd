@@ -123,7 +123,7 @@ const ViewsOption = () => {
             <Button
               disabled={isLoading}
               // onClick={handlRun}
-              // onClick={() => navigate("/user")}
+              onClick={() => navigate("/shipment")}
               className="bg-yellow-600 text-gray-800 text-2xl py-8 px-12 hover:bg-yellow-700 font-bold"
             >
               {" "}

@@ -161,9 +161,8 @@ const ModelConfiguration = () => {
         </div>
       </div>
       <div className="gap-4 flex  flex-col justify-center items-center">
-        {location &&
+        {(location || categorymaster) &&
           pricemaster &&
-          categorymaster &&
           inventorynorms &&
           ShipmentNorm && (
             <div className="relative flex w-full">

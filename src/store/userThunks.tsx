@@ -52,18 +52,26 @@ export const registerUser = createAsyncThunk(
 );
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (data: FormData, thunkAPI) => {
-    const email = data.get("email");
-    const password = data.get("password");
+  async (
+    { email, password }: { email: string; password: string },
+    thunkAPI
+  ) => {
     try {
-      // const config: AxiosRequestConfig = {
-      //   withCredentials: true,
-      // };
-      const response = await axios.post("/api/login", {
-        email,
-        password,
-      });
-
+      console.log("loginUser" + email + password);
+      const response = await axios.post(
+        "/api/token",
+        new URLSearchParams({
+          username: email,
+          password: password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      document.cookie = `company_id=${response.data.company_id}; path=/`;
+      document.cookie = `user_id=${response.data.user_id}; path=/`;
       return response.data;
     } catch (error) {
       console.log(error);

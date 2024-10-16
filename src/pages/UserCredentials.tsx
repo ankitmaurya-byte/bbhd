@@ -32,11 +32,7 @@ const UserCredentials = () => {
   const { status: userStatus, user } = useAppSelector((state) => state.user);
   const mainContent = useContext(maincontainer) as MainContainerContext;
   const alert = useAlert();
-  const { setActiveStep, setIsVisible } = useContext(
-    StepperProgressContext
-  ) as {
-    setActiveStep: (value: React.SetStateAction<number>) => void;
-  };
+  const { setActiveStep, setIsVisible } = useContext(StepperProgressContext);
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   // const countryCodeStyles = {
@@ -215,15 +211,24 @@ const UserCredentials = () => {
   const [selectedCountry, setSelectedCountry] = useState<{
     label: string;
     value: string;
-  } | null>(null);
+  } | null>({
+    label: organisationInfo.country,
+    value: organisationInfo.country,
+  });
   const [selectedState, setSelectedState] = useState<{
     label: string;
     value: string;
-  } | null>(null);
+  } | null>({
+    label: organisationInfo.state,
+    value: organisationInfo.state,
+  });
   const [selectedCity, setSelectedCity] = useState<{
     label: string;
     value: string;
-  } | null>(null);
+  } | null>({
+    label: organisationInfo.city,
+    value: organisationInfo.city,
+  });
   const countries = Country.getAllCountries().map((country) => ({
     label: country.name,
     value: country.isoCode,
@@ -354,20 +359,20 @@ const UserCredentials = () => {
         setIsLoading(false);
         return;
       }
-      const urlEncodedData = new URLSearchParams({
-        username: username || "",
-        password: user.password,
-      }).toString();
-      const token = await axios.post("/api/token", urlEncodedData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
+      // const urlEncodedData = new URLSearchParams({
+      //   username: username || "",
+      //   password: user.password,
+      // }).toString();
+      // const token = await axios.post("/api/token", urlEncodedData, {
+      //   headers: {
+      //     "Content-Type": "application/x-www-form-urlencoded",
+      //   },
+      // });
       console.log(org.payload.company_id);
       console.log(userResponse.payload.user_id);
-      document.cookie = `token=${
-        token.data.token_type + " " + token.data.access_token
-      }; path=/`;
+      // document.cookie = `token=${
+      //   token.data.token_type + " " + token.data.access_token
+      // }; path=/`;
 
       document.cookie = `company_id=${org.payload.company_id}; path=/`;
       document.cookie = `user_id=${userResponse.payload.user_id}; path=/`;
@@ -405,11 +410,6 @@ const UserCredentials = () => {
     });
   };
   useEffect(() => {
-    setAddress1(organisationInfo.address);
-    setAddress2(organisationInfo.address2);
-    setPincode(organisationInfo.pincode);
-    setContactNumber(organisationInfo.contact_phone);
-
     if (naviagateNext && mainContent.current) {
       console.log(mainContent.pages);
       mainContent.current.scrollTo({
@@ -446,7 +446,7 @@ const UserCredentials = () => {
                 id="username"
                 value={username}
                 onChange={handleUsernameChange}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder:text-[16px] "
                 placeholder="Enter your username"
               />
             </div>
@@ -462,7 +462,7 @@ const UserCredentials = () => {
                 type="email"
                 id="email"
                 value={user?.email}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your email"
                 readOnly={true}
               />
@@ -480,7 +480,7 @@ const UserCredentials = () => {
                 id="firstname"
                 value={firstname}
                 onChange={handleFirstnameChange}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your First Name"
               />
             </div>
@@ -497,7 +497,7 @@ const UserCredentials = () => {
                 id="lastname"
                 value={lastname}
                 onChange={handleLastnameChange}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your Last Name"
               />
             </div>
@@ -547,7 +547,7 @@ const UserCredentials = () => {
                 id="companyname"
                 value={companyname}
                 onChange={handleCompanynameChange}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your company name"
               />
             </div>
@@ -565,7 +565,7 @@ const UserCredentials = () => {
                 value={companyemail}
                 onChange={handleComanyemailChange}
                 onBlur={handelCompanyemailBlur}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your company Email"
               />
             </div>
@@ -581,7 +581,7 @@ const UserCredentials = () => {
                 id="address1"
                 value={address1}
                 onChange={handelArddress1Change}
-                className="mt-1 resize-none p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 resize-none p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your address Eg: 3180 Danforth Ave, Toronto,Ontario "
               ></textarea>
             </div>
@@ -597,7 +597,7 @@ const UserCredentials = () => {
                 id="address2"
                 value={address2}
                 onChange={handelArddress2Change}
-                className="mt-1 resize-none p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 resize-none p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter your address Eg: 3180 Danforth Ave, Toronto,Ontario "
               ></textarea>
             </div>
@@ -615,7 +615,7 @@ const UserCredentials = () => {
                 value={pincode}
                 onChange={handlePincodeChange}
                 onBlur={handPincodeBlur}
-                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                 placeholder="Enter Adress pincode"
               />
             </div>
@@ -648,7 +648,7 @@ const UserCredentials = () => {
                   value={contactnumber}
                   onChange={handleContactNumberChange}
                   onBlur={handNumberBlur}
-                  className=" p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className=" p-2 text-gray-900 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-[16px] sm:text-sm"
                   placeholder="Enter your Contact number"
                 />
               </div>
