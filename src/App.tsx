@@ -17,6 +17,8 @@ import { useAppDispatch, useAppSelector } from "./store/reduxHooks";
 import Spinner from "./components/ui/spinner/Spinner";
 import Img from "./components/LasyLoading";
 import ShipmentChart from "./pages/charts/Shipment";
+import Inventory from "./pages/charts/Inventory";
+
 export const StepperProgressContext = createContext({
   isVisible: false,
   setIsVisible: (value: boolean | ((prevState: boolean) => boolean)) => {},
@@ -81,7 +83,9 @@ function App() {
     }
   };
   useWebFontLoader();
+
   useEffect(() => {
+    setIsLoading(false);
     if (!user_id) {
       setIsLoading(false);
     } else {
@@ -122,7 +126,8 @@ function App() {
           <Route path="/user" element={<PrepareModel />} />
           <Route path="/runmodel" element={<RunModel />} />
           <Route path="/chart" element={<ViewsOption />} />
-          {/* <Route path="/shipment" element={<ShipmentChart />} /> */}
+          <Route path="/shipment" element={<ShipmentChart />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Routes>
       </div>
     </StepperProgressContext.Provider>

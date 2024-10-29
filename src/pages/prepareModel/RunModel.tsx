@@ -2,6 +2,7 @@ import { StepperProgressContext } from "@/App";
 import ContentWrapper from "@/components/ContentWrapper";
 import Img from "@/components/LasyLoading";
 import { Button } from "@/components/ui/button";
+import CheckmarkIcon from "@/components/ui/CheckMarkIcon";
 import Spinner from "@/components/ui/spinner/Spinner";
 import { maincontainer } from "@/configs/mainContainer";
 import { clearCategories } from "@/store/modelConfiguration/categorySlice";
@@ -33,7 +34,10 @@ const RunModel = (props: Props) => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const [intransitFileUploaded, setIntransittFileUploaded] = useState(false);
+  const [inventoryFileUploaded, setInventoryFileUploaded] = useState(false);
+  const [salesFileUploaded, setSalesFileUploaded] = useState(false);
+  const [forecastFileUploaded, setForeCastFileUloaded] = useState(false);
   const handlRun = async () => {
     setIsLoading(true);
     try {
@@ -68,9 +72,171 @@ const RunModel = (props: Props) => {
     }
     setIsLoading(false);
   };
-  const handleForcastUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Access the files from the input
-    const files = e.target.files;
+  const handleForcastUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsLoading(true);
+    try {
+      // Access the files from the input
+      const files = e.target.files;
+      if (!files) return;
+
+      const formData = new FormData();
+      formData.append("file", files[0]);
+
+      const user_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("user_id="))
+          ?.split("=")[1]
+      );
+      const company_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("company_id="))
+          ?.split("=")[1]
+      );
+
+      const response = await axios.post(
+        "/api/upload_forecasted_data/",
+        formData,
+        {
+          params: {
+            user_id,
+            company_id,
+          },
+        }
+      );
+      console.log(response);
+      setForeCastFileUloaded(true);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleInventoryUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsLoading(true);
+    try {
+      // Access the files from the input
+      const files = e.target.files;
+      if (!files) return;
+
+      const formData = new FormData();
+      formData.append("file", files[0]);
+
+      const user_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("user_id="))
+          ?.split("=")[1]
+      );
+      const company_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("company_id="))
+          ?.split("=")[1]
+      );
+
+      const response = await axios.post(
+        "/api/upload_inventory_data/",
+        formData,
+        {
+          params: {
+            user_id,
+            company_id,
+          },
+        }
+      );
+      console.log(response);
+      setInventoryFileUploaded(true);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleIntransitUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsLoading(true);
+    try {
+      // Access the files from the input
+      const files = e.target.files;
+      if (!files) return;
+
+      const formData = new FormData();
+      formData.append("file", files[0]);
+
+      const user_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("user_id="))
+          ?.split("=")[1]
+      );
+      const company_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("company_id="))
+          ?.split("=")[1]
+      );
+
+      const response = await axios.post(
+        "/api/upload_intransit_data/",
+        formData,
+        {
+          params: {
+            user_id,
+            company_id,
+          },
+        }
+      );
+      console.log(response);
+      setIntransittFileUploaded(true);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSalesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsLoading(true);
+    try {
+      // Access the files from the input
+      const files = e.target.files;
+      if (!files) return;
+
+      const formData = new FormData();
+      formData.append("file", files[0]);
+
+      const user_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("user_id="))
+          ?.split("=")[1]
+      );
+      const company_id = Number(
+        document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("company_id="))
+          ?.split("=")[1]
+      );
+
+      const response = await axios.post("/api/upload_sales_data/", formData, {
+        params: {
+          user_id,
+          company_id,
+        },
+      });
+      console.log(response);
+      setSalesFileUploaded(true);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const mainContent = useContext(maincontainer) as MainContainerContext;
   const dispatch = useAppDispatch();
@@ -118,7 +284,7 @@ const RunModel = (props: Props) => {
     <ContentWrapper>
       <Spinner isLoading={isLoading} />
       <div className="overflow-hidden">
-        {/* <Spinner isLoading={isLoading} /> */}
+        <Spinner isLoading={isLoading} />
         <div className=" absolute inset-0 h-full w-full bg-[rgb(40,50,86)]/75 -z-10"></div>
         <Img
           src="/background-image.jpg"
@@ -138,12 +304,20 @@ const RunModel = (props: Props) => {
               <div className="bg-gray-900 bg-opacity-70  p-8 rounded-lg gap-12 grid grid-rows-4 items-center h-full place-items-start mx-auto">
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Sales File:</div>
-                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg">Choose file</div>
-
+                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 ">
+                    <div
+                      className={`text-lg flex items-center space-x-2 ${
+                        salesFileUploaded ? "text-green-500" : ""
+                      }`}
+                    >
+                      <p>Choose file</p>
+                      {salesFileUploaded && (
+                        <CheckmarkIcon width={25} height={25} />
+                      )}
+                    </div>
                     {/* Label wrapped around Button for file input */}
                     <label
-                      htmlFor="file-upload"
+                      htmlFor="sales-file-upload"
                       className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
                     >
                       Browse
@@ -151,29 +325,36 @@ const RunModel = (props: Props) => {
 
                     {/* Hidden file input */}
                     <input
-                      id="file-upload"
+                      id="sales-file-upload"
                       type="file"
                       className="hidden"
-                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                      onChange={handleSalesUpload} // Optional: Handle file selection
                     />
                   </div>
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Forecast File:</div>
-                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg">Choose file</div>
-
+                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 ">
+                    <div
+                      className={`text-lg flex items-center space-x-2 ${
+                        forecastFileUploaded ? "text-green-500" : ""
+                      }`}
+                    >
+                      <p>Choose file</p>
+                      {forecastFileUploaded && (
+                        <CheckmarkIcon width={25} height={25} />
+                      )}
+                    </div>
                     {/* Label wrapped around Button for file input */}
                     <label
-                      htmlFor="file-upload"
+                      htmlFor="forecast-file-upload"
                       className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
                     >
                       Browse
                     </label>
-
                     {/* Hidden file input */}
                     <input
-                      id="file-upload"
+                      id="forecast-file-upload"
                       type="file"
                       className="hidden"
                       onChange={handleForcastUpload} // Optional: Handle file selection
@@ -182,12 +363,20 @@ const RunModel = (props: Props) => {
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Inventory File:</div>
-                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg">Choose file</div>
-
+                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 ">
+                    <div
+                      className={`text-lg flex items-center space-x-2 ${
+                        inventoryFileUploaded ? "text-green-500" : ""
+                      }`}
+                    >
+                      <p>Choose file</p>
+                      {inventoryFileUploaded && (
+                        <CheckmarkIcon width={25} height={25} />
+                      )}
+                    </div>
                     {/* Label wrapped around Button for file input */}
                     <label
-                      htmlFor="file-upload"
+                      htmlFor="inventory-file-upload"
                       className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
                     >
                       Browse
@@ -195,21 +384,30 @@ const RunModel = (props: Props) => {
 
                     {/* Hidden file input */}
                     <input
-                      id="file-upload"
+                      id="inventory-file-upload"
                       type="file"
                       className="hidden"
-                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                      onChange={handleInventoryUpload} // Optional: Handle file selection
                     />
                   </div>
                 </div>
                 <div className="grid h-full grid-cols-[1.5fr_4fr] items-center w-full">
                   <div className="text-lg font-semibold">Intransit File:</div>
-                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 text-black">
-                    <div className="text-lg">Choose file</div>
+                  <div className="bg-[#b4b1bb] bg-opacity-70 h-full rounded-xl grid place-items-center grid-cols-[2fr_1fr] p-1 grid-rows-1 ">
+                    <div
+                      className={`text-lg flex items-center space-x-2 ${
+                        intransitFileUploaded ? "text-green-500" : ""
+                      }`}
+                    >
+                      <p>Choose file</p>
+                      {intransitFileUploaded && (
+                        <CheckmarkIcon width={25} height={25} />
+                      )}
+                    </div>
 
                     {/* Label wrapped around Button for file input */}
                     <label
-                      htmlFor="file-upload"
+                      htmlFor="intransit-file-upload"
                       className="bg-yellow-600 h-full text-gray-800 px-8 justify-self-end rounded-lg hover:bg-yellow-700 font-bold flex items-center cursor-pointer"
                     >
                       Browse
@@ -217,10 +415,10 @@ const RunModel = (props: Props) => {
 
                     {/* Hidden file input */}
                     <input
-                      id="file-upload"
+                      id="intransit-file-upload"
                       type="file"
                       className="hidden"
-                      onChange={(e) => console.log(e.target.files[0])} // Optional: Handle file selection
+                      onChange={handleIntransitUpload} // Optional: Handle file selection
                     />
                   </div>
                 </div>
@@ -229,7 +427,12 @@ const RunModel = (props: Props) => {
 
             <div className="flex flex-col h-full justify-center items-center gap-4">
               <Button
-                // disabled={isLoading}
+                disabled={
+                  isLoading ||
+                  !intransitFileUploaded ||
+                  !inventoryFileUploaded ||
+                  !forecastFileUploaded
+                }
                 onClick={handlRun}
                 // onClick={() => navigate("/chart")}
                 className="bg-yellow-600 text-gray-800 text-xl py-6 px-12 hover:bg-yellow-700 font-bold w-full"
@@ -238,18 +441,20 @@ const RunModel = (props: Props) => {
                 model run
               </Button>
               <Button
+                disabled={isLoading}
                 onClick={() => navigate("/user")}
                 className="bg-yellow-600 text-gray-800 text-xl py-6 px-12 hover:bg-yellow-700 font-bold w-full"
               >
                 {" "}
                 Profile
               </Button>
-              <div
+              <button
+                disabled={isLoading}
                 onClick={handleLogout}
                 className="cursor-pointer px-2rem text-yellow-600 text-center text-2xl self-end hover:text-yellow-700 justify-self-end font-bold"
               >
                 Logout <FontAwesomeIcon icon={faRightFromBracket} />
-              </div>
+              </button>
             </div>
           </div>
         </div>

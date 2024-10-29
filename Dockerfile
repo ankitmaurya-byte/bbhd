@@ -1,20 +1,11 @@
-# Use an official Node runtime as the base image
-FROM node:14-alpine
+# Use a lightweight web server image
+FROM nginx:alpine
 
-# Set the working directory in the container
-WORKDIR /app
+# Copy the built React files from the "dist" folder to the Nginx web server folder
+COPY dist /usr/share/nginx/html
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Expose port 80 for the container
+EXPOSE 80
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Define the command to run the app
-CMD ["npm", "start"]
+# Start the Nginx server
+CMD ["nginx", "-g", "daemon off;"]

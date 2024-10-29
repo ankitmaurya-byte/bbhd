@@ -1,7 +1,17 @@
 {
-  "name": "flare",
+  "name": "sum of quantity",
   "value": 3467,
   "children": [
+    {
+      "name": "Bhiwandi",
+      "children": [],
+      "value": 1800
+    },
+    {
+      "name": "Benglore",
+      "children": [],
+      "value": 927
+    },
     {
       "name": "analytics",
       "value": 3455,
@@ -12,16 +22,6 @@
         { "name": "ShortestPaths", "value": 5914 },
         { "name": "SpanningTree", "value": 3416 }
       ]
-    },
-    {
-      "name": "Bhiwandi",
-      "children": [],
-      "value": 1800
-    },
-    {
-      "name": "Benglore",
-      "children": [],
-      "value": 927
     },
     {
       "name": "Pune",

@@ -1,0 +1,362 @@
+[
+  {
+    "shipment_id": 1,
+    "from_location": "Bangalore",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 9514,
+    "ptl_qty": 0,
+    "total_trip_cost": 69799,
+    "total_remaining_space": 2986,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 2,
+    "from_location": "Bangalore",
+    "to_location": "Chennai",
+    "total_allocated_qty": 5903,
+    "ptl_qty": 0,
+    "total_trip_cost": 15828,
+    "total_remaining_space": 847,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 3,
+    "from_location": "Bangalore",
+    "to_location": "Kochi",
+    "total_allocated_qty": 7321,
+    "ptl_qty": 0,
+    "total_trip_cost": 26743,
+    "total_remaining_space": 2179,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 4,
+    "from_location": "Bangalore",
+    "to_location": "hyderabad",
+    "total_allocated_qty": 0,
+    "ptl_qty": 1012,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 5,
+    "from_location": "Bhiwandi",
+    "to_location": "Bangalore",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 428,
+    "total_trip_cost": 15511,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 6,
+    "from_location": "Bhiwandi",
+    "to_location": "Chennai",
+    "total_allocated_qty": 4020,
+    "ptl_qty": 0,
+    "total_trip_cost": 37594,
+    "total_remaining_space": 480,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 7,
+    "from_location": "Bhiwandi",
+    "to_location": "Gurugram",
+    "total_allocated_qty": 12870,
+    "ptl_qty": 0,
+    "total_trip_cost": 94789,
+    "total_remaining_space": 1130,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 8,
+    "from_location": "Bhiwandi",
+    "to_location": "Kochi",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 901,
+    "total_trip_cost": 19922,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 9,
+    "from_location": "Bhiwandi",
+    "to_location": "hyderabad",
+    "total_allocated_qty": 1914,
+    "ptl_qty": 0,
+    "total_trip_cost": 11085,
+    "total_remaining_space": 337,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 10,
+    "from_location": "Chennai",
+    "to_location": "Bangalore",
+    "total_allocated_qty": 14643,
+    "ptl_qty": 0,
+    "total_trip_cost": 29016,
+    "total_remaining_space": 3857,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 11,
+    "from_location": "Chennai",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 476,
+    "total_trip_cost": 18797,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 12,
+    "from_location": "Chennai",
+    "to_location": "Kochi",
+    "total_allocated_qty": 48318,
+    "ptl_qty": 0,
+    "total_trip_cost": 142438,
+    "total_remaining_space": 682,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 13,
+    "from_location": "Chennai",
+    "to_location": "hyderabad",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 770,
+    "total_trip_cost": 9412,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 14,
+    "from_location": "Gurugram",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 18500,
+    "ptl_qty": 603,
+    "total_trip_cost": 109756,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 15,
+    "from_location": "Gurugram",
+    "to_location": "chandigarh",
+    "total_allocated_qty": 0,
+    "ptl_qty": 48,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 16,
+    "from_location": "Gurugram",
+    "to_location": "lucknow",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 83,
+    "total_trip_cost": 7739,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 17,
+    "from_location": "Guwahati",
+    "to_location": "Kolkatta",
+    "total_allocated_qty": 13700,
+    "ptl_qty": 0,
+    "total_trip_cost": 44866,
+    "total_remaining_space": 300,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 18,
+    "from_location": "Guwahati",
+    "to_location": "lucknow",
+    "total_allocated_qty": 0,
+    "ptl_qty": 87,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 19,
+    "from_location": "Kochi",
+    "to_location": "Bangalore",
+    "total_allocated_qty": 7837,
+    "ptl_qty": 0,
+    "total_trip_cost": 26743,
+    "total_remaining_space": 1663,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 20,
+    "from_location": "Kochi",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 1779,
+    "ptl_qty": 0,
+    "total_trip_cost": 19922,
+    "total_remaining_space": 471,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 21,
+    "from_location": "Kochi",
+    "to_location": "Chennai",
+    "total_allocated_qty": 40000,
+    "ptl_qty": 614,
+    "total_trip_cost": 101742,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 22,
+    "from_location": "Kolkatta",
+    "to_location": "Guwahati",
+    "total_allocated_qty": 9049,
+    "ptl_qty": 0,
+    "total_trip_cost": 37782,
+    "total_remaining_space": 451,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 23,
+    "from_location": "Kolkatta",
+    "to_location": "lucknow",
+    "total_allocated_qty": 0,
+    "ptl_qty": 93,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 24,
+    "from_location": "chandigarh",
+    "to_location": "Gurugram",
+    "total_allocated_qty": 8515,
+    "ptl_qty": 0,
+    "total_trip_cost": 18468,
+    "total_remaining_space": 485,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 25,
+    "from_location": "chandigarh",
+    "to_location": "lucknow",
+    "total_allocated_qty": 1196,
+    "ptl_qty": 0,
+    "total_trip_cost": 10780,
+    "total_remaining_space": 1054,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 26,
+    "from_location": "hyderabad",
+    "to_location": "Bangalore",
+    "total_allocated_qty": 32383,
+    "ptl_qty": 0,
+    "total_trip_cost": 89017,
+    "total_remaining_space": 5617,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 27,
+    "from_location": "hyderabad",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 4500,
+    "ptl_qty": 642,
+    "total_trip_cost": 22170,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 28,
+    "from_location": "hyderabad",
+    "to_location": "Kochi",
+    "total_allocated_qty": 0,
+    "ptl_qty": 25,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 29,
+    "from_location": "lucknow",
+    "to_location": "chandigarh",
+    "total_allocated_qty": 2209,
+    "ptl_qty": 0,
+    "total_trip_cost": 10780,
+    "total_remaining_space": 41,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 1,
+    "from_location": "Bangalore",
+    "to_location": "Bhiwandi",
+    "total_allocated_qty": 9514,
+    "ptl_qty": 0,
+    "total_trip_cost": 69799,
+    "total_remaining_space": 2986,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 2,
+    "from_location": "Bangalore",
+    "to_location": "Chennai",
+    "total_allocated_qty": 5903,
+    "ptl_qty": 0,
+    "total_trip_cost": 15828,
+    "total_remaining_space": 847,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 3,
+    "from_location": "Bangalore",
+    "to_location": "Kochi",
+    "total_allocated_qty": 7321,
+    "ptl_qty": 0,
+    "total_trip_cost": 26743,
+    "total_remaining_space": 2179,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 4,
+    "from_location": "Bangalore",
+    "to_location": "hyderabad",
+    "total_allocated_qty": 0,
+    "ptl_qty": 1012,
+    "total_trip_cost": 0,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 5,
+    "from_location": "Bhiwandi",
+    "to_location": "Bangalore",
+    "total_allocated_qty": 2250,
+    "ptl_qty": 428,
+    "total_trip_cost": 15511,
+    "total_remaining_space": 0,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 6,
+    "from_location": "Bhiwandi",
+    "to_location": "Chennai",
+    "total_allocated_qty": 4020,
+    "ptl_qty": 0,
+    "total_trip_cost": 37594,
+    "total_remaining_space": 480,
+    "unallocated_skus": "0"
+  },
+  {
+    "shipment_id": 7,
+    "from_location": "Bhiwandi",
+    "to_location": "Gurugram",
+    "total_allocated_qty": 12870,
+    "ptl_qty": 0,
+    "total_trip_cost": 94789,
+    "total_remaining_space": 1130,
+    "unallocated_skus": "0"
+  }
+]
