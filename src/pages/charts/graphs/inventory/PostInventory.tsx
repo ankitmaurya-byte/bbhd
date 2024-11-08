@@ -6,204 +6,211 @@ import Img from "@/components/LasyLoading";
 import Spinner from "@/components/ui/spinner/Spinner";
 import useResizeObserver from "@/hooks/useResizeObserver";
 
-const PostInventory = ({ parentRef }) => {
+const PostInventory = ({ data, parentRef }) => {
   const chartRef = useRef(null);
   const dimensions = useResizeObserver(parentRef) as
     | { width: number; height: number }
     | undefined;
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (!dimensions) return; // Ensure dimensions are available
-    console.log(dimensions.width);
-    console.log(dimensions.height);
+  const createChart = (data) => {
+    const margin = { top: 20, right: 30, bottom: 30, left: 70 };
+    const width = dimensions.width - 20;
+    const height = dimensions.height - 10;
 
-    d3.csv("post_inventory.csv").then((data) => {
-      console.log(data);
+    // Remove existing chart for re-render
+    d3.select(chartRef.current).select("svg").remove();
 
-      data.forEach((d) => {
-        d.ideal_invt_days = +d.ideal_invt_days;
-        d.pre_invt_days = +d.pre_invt_days;
-        d.post_invt_days = +d.post_invt_days;
-      });
+    const svg = d3
+      .select(chartRef.current)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("class", "max-w-full h-auto overflow-visible font-sans text-sm");
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", `tooltip tooltip-prevspost`)
+      .style("position", "absolute")
+      .style("background-color", "rgba(0, 0, 0, 0.8)")
+      .style("color", "white")
+      .style("padding", "8px")
+      .style("border-radius", "4px")
+      .style("pointer-events", "none")
+      .style("font-size", "14px")
+      .style("box-shadow", "0px 4px 10px rgba(0, 0, 0, 0.25)")
+      .style("opacity", 0);
+    // .append("div");
+    // .attr(
+    //   "class",
+    //   "tooltip absolute bg-white border border-gray-300 p-2 text-xs opacity-0 pointer-events-none transition-opacity duration-200 ease-in-out"
+    // );
 
-      // Group data by category and calculate averages
-      const groupedData = d3
-        .rollups(
-          data,
-          (v) => {
-            return {
-              avg_ideal_invt_days: d3.mean(v, (d) => d.ideal_invt_days),
-              avg_pre_invt_days: d3.mean(v, (d) => d.pre_invt_days),
-              avg_post_invt_days: d3.mean(v, (d) => d.post_invt_days),
-            };
-          },
-          (d) => d.category
+    const x = d3
+      .scaleBand()
+      .domain(data.map((d) => d.category))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+
+    const y = d3
+      .scaleLinear()
+      .domain([0, 60])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
+
+    // Horizontal axis
+    svg
+      .append("g")
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+      .style("color", "white")
+      .selectAll("text")
+      .attr("dy", (d, i) => (i % 2 === 0 ? "12" : "2"))
+      .style("text-anchor", "middle")
+      .style("font-size", "6px")
+      .style("color", "white")
+      .style("font-weight", "100");
+
+    // Vertical axis
+    svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y))
+      .style("color", "white")
+      .call((g) =>
+        g
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -height / 2) // Center the text vertically
+          .attr("y", -margin.left + 15) // Position the text to the left of the Y-axis
+          .attr("dy", "1em") // Adjust vertical alignment
+          .style("text-anchor", "middle")
+          .style("fill", "white") // Set label color
+          .style("font-size", "18px")
+          .text("Inventory Days")
+      )
+      .selectAll("text")
+      .style("color", "white");
+    // .style("font-weight", "100");
+
+    const line = d3
+      .line()
+      .x((d) => x(d.category) + x.bandwidth() / 2)
+      .y((d) => y(d.value))
+      .curve(d3.curveCardinal);
+
+    const lines = [
+      {
+        name: "Avg Ideal Inventory Days",
+        key: "ideal_invt_days",
+        color: "steelblue",
+      },
+      {
+        name: "Avg Pre Inventory Days",
+        key: "pre_invt_days",
+        color: "#358602",
+      },
+      {
+        name: "Avg Post Inventory Days",
+        key: "post_invt_days",
+        color: "#d4d700",
+      },
+    ];
+
+    lines.forEach((lineData) => {
+      const lineGroup = svg.append("g");
+
+      // Draw line
+      lineGroup
+        .append("path")
+        .datum(
+          data.map((d) => ({ category: d.category, value: d[lineData.key] }))
         )
-        .map(([category, values]) => ({
-          category,
-          ideal_invt_days: values.avg_ideal_invt_days,
-          pre_invt_days: values.avg_pre_invt_days,
-          post_invt_days: values.avg_post_invt_days,
-        }));
+        .attr("fill", "none")
+        .attr("stroke", lineData.color)
+        .attr("stroke-width", 2)
+        .attr("d", line);
 
-      createChart(groupedData);
+      // Draw circles and add tooltip
+      lineGroup
+        .selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("cx", (d) => x(d.category) + x.bandwidth() / 2)
+        .attr("cy", (d) => y(d[lineData.key]))
+        .attr("r", 5)
+        .attr("fill", lineData.color)
+        .style("cursor", "pointer")
+        .on("mouseover", (event, d) => {
+          tooltip.transition().duration(200).style("opacity", 1);
+          tooltip
+            .html(
+              `<div>
+              <div>Category: ${d.category}<br></div>
+                ${lines
+                  .map((line) => `${line.name}: ${d[line.key].toFixed(2)}`)
+                  .join("<br>")}
+              </div>`
+            )
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 28 + "px");
+        })
+        .on("mouseout", () =>
+          tooltip.transition().duration(200).style("opacity", 0)
+        );
     });
 
-    const createChart = (data) => {
-      const margin = { top: 20, right: 30, bottom: 20, left: 30 };
-      const width = dimensions.width - 20;
-      const height = dimensions.height - 10;
+    // Legend
+    const legend = svg
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${width - margin.right - 170}, ${margin.top})`
+      );
 
-      // Remove existing chart for re-render
-      d3.select(chartRef.current).select("svg").remove();
+    lines.forEach((lineData, i) => {
+      const g = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
 
-      const svg = d3
-        .select(chartRef.current)
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("class", "max-w-full h-auto overflow-visible font-sans text-sm");
+      g.append("rect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", lineData.color);
+      g.append("text").attr("x", 15).attr("y", 10).text(lineData.name);
+    });
+  };
 
-      const tooltip = d3
-        .select(chartRef.current)
-        .append("div")
-        .attr(
-          "class",
-          "tooltip absolute bg-white border border-gray-300 p-2 text-xs opacity-0 pointer-events-none"
-        );
+  useEffect(() => {
+    if (!dimensions) return; // Ensure dimensions are available
 
-      const x = d3
-        .scaleBand()
-        .domain(data.map((d) => d.category))
-        .range([margin.left, width - margin.right])
-        .padding(0.1);
+    data.forEach((d) => {
+      d.ideal_invt_days = +d.ideal_invt_days;
+      d.pre_invt_days = +d.pre_invt_days;
+      d.post_invt_days = +d.post_invt_days;
+    });
 
-      const y = d3
-        .scaleLinear()
-        .domain([0, 60])
-        .nice()
-        .range([height - margin.bottom, margin.top]);
-
-      // Horizontal axis
-      svg
-        .append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x))
-        .selectAll("text")
-        .attr("dy", (d, i) => (i % 2 === 0 ? "12" : "2"))
-        .style("text-anchor", "middle")
-        .style("font-size", "6px")
-        .style("color", "white")
-        .style("font-weight", "100");
-      svg.selectAll("path, line, text");
-      svg
-        .selectAll(".tick line")
-        .attr("y2", (d, i) => (i % 2 === 0 ? "12" : "2"));
-      // Vertical axis
-      svg
-        .append("g")
-        .attr("transform", `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y))
-        .call((g) =>
-          g
-            .append("text")
-            .attr("x", -margin.left)
-            .attr("y", 10)
-            .attr("fill", "currentColor")
-            .attr("text-anchor", "start")
-            .text("Average Days")
-        )
-        .selectAll("text")
-        .style("color", "white")
-        .style("font-weight", "100");
-
-      const line = d3
-        .line()
-        .x((d) => x(d.category) + x.bandwidth() / 2)
-        .y((d) => y(d.value))
-        .curve(d3.curveCardinal);
-
-      const lines = [
-        {
-          name: "Avg Ideal Inventory Days",
-          key: "ideal_invt_days",
-          color: "steelblue",
+    // Group data by category and calculate averages
+    const groupedData = d3
+      .rollups(
+        data,
+        (v) => {
+          return {
+            avg_ideal_invt_days: d3.mean(v, (d) => d.ideal_invt_days),
+            avg_pre_invt_days: d3.mean(v, (d) => d.pre_invt_days),
+            avg_post_invt_days: d3.mean(v, (d) => d.post_invt_days),
+          };
         },
-        {
-          name: "Avg Pre Inventory Days",
-          key: "pre_invt_days",
-          color: "green",
-        },
-        {
-          name: "Avg Post Inventory Days",
-          key: "post_invt_days",
-          color: "red",
-        },
-      ];
+        (d) => d.category
+      )
+      .map(([category, values]) => ({
+        category,
+        ideal_invt_days: values.avg_ideal_invt_days,
+        pre_invt_days: values.avg_pre_invt_days,
+        post_invt_days: values.avg_post_invt_days,
+      }));
 
-      lines.forEach((lineData) => {
-        const lineGroup = svg.append("g");
+    createChart(groupedData);
+  }, [dimensions]);
 
-        // Draw line
-        lineGroup
-          .append("path")
-          .datum(
-            data.map((d) => ({ category: d.category, value: d[lineData.key] }))
-          )
-          .attr("fill", "none")
-          .attr("stroke", lineData.color)
-          .attr("stroke-width", 2)
-          .attr("d", line);
-
-        // Draw circles and add tooltip
-        lineGroup
-          .selectAll("circle")
-          .data(
-            data.map((d) => ({ category: d.category, value: d[lineData.key] }))
-          )
-          .join("circle")
-          .attr("cx", (d) => x(d.category) + x.bandwidth() / 2)
-          .attr("cy", (d) => y(d.value))
-          .attr("r", 4)
-          .attr("fill", lineData.color)
-          .on("mouseover", (event, d) => {
-            tooltip.transition().duration(200).style("opacity", 1);
-            tooltip
-              .html(
-                `${lineData.name}<br>Category: ${
-                  d.category
-                }<br>Value: ${d.value.toFixed(2)}`
-              )
-              .style("left", event.pageX + 10 + "px")
-              .style("top", event.pageY - 28 + "px");
-          })
-          .on("mouseout", () =>
-            tooltip.transition().duration(200).style("opacity", 0)
-          );
-      });
-
-      // Legend
-      const legend = svg
-        .append("g")
-        .attr(
-          "transform",
-          `translate(${width - margin.right - 170}, ${margin.top})`
-        );
-
-      lines.forEach((lineData, i) => {
-        const g = legend
-          .append("g")
-          .attr("transform", `translate(0, ${i * 20})`);
-
-        g.append("rect")
-          .attr("width", 10)
-          .attr("height", 10)
-          .attr("fill", lineData.color);
-        g.append("text").attr("x", 15).attr("y", 10).text(lineData.name);
-      });
-    };
-  }, [dimensions]); // Re-run when dimensions change
   return <div ref={chartRef} className="relative py-[5px] px-2"></div>;
 };
 

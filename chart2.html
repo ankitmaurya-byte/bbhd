@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shipment Flow Sunburst Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+      #chart {
+        width: 800px;
+        height: 800px;
+        margin: 0 auto;
+      }
+      .tooltip {
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+        pointer-events: none;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <div class="tooltip"></div>
+
+    <script>
+      // Parse the CSV data
+      const csvData = `id,shipment_id,user_id,from_location,to_location,total_allocated_qty,ptl_qty,total_trip_cost,total_remaining_space,unallocated_skus,run_id,created_at,updated_at
+2010,1,78,Bangalore,Bhiwandi,9953,0,69799,2547,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2011,2,78,Bangalore,Chennai,10271,0,23740,2229,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2012,3,78,Bangalore,Kochi,10023,0,30086,2477,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2013,4,78,Bangalore,hyderabad,0,470,0,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2014,5,78,Bhiwandi,Bangalore,6530,0,46533,221,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2015,6,78,Bhiwandi,Chennai,2250,183,18797,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2016,7,78,Bhiwandi,Gurugram,29565,0,174612,685,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2017,8,78,Bhiwandi,Kochi,10748,0,89649,1752,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2018,9,78,Bhiwandi,hyderabad,4384,0,22170,116,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2019,10,78,Chennai,Bangalore,17803,0,29016,697,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2020,11,78,Chennai,Bhiwandi,0,628,0,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2021,12,78,Chennai,Kochi,73790,0,198396,2211,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2022,13,78,Gurugram,Bhiwandi,4500,457,39912,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2023,14,78,Gurugram,chandigarh,0,838,0,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2024,15,78,Gurugram,lucknow,7103,0,29021,197,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2025,16,78,Guwahati,Kolkatta,13952,0,44866,48,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2026,17,78,Kochi,Bangalore,17902,0,36772,598,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2027,18,78,Kochi,Bhiwandi,1248,0,19922,1002,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2028,19,78,Kochi,Chennai,28000,544,78850,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2029,20,78,Kolkatta,Guwahati,14793,0,51951,3707,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2030,21,78,chandigarh,Gurugram,17385,0,25396,1115,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2031,22,78,chandigarh,lucknow,0,854,0,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2032,23,78,hyderabad,Bangalore,42302,0,107277,198,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2033,24,78,hyderabad,Bhiwandi,4500,570,22170,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2034,25,78,hyderabad,Chennai,2196,0,9412,54,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2035,26,78,hyderabad,Kochi,0,427,0,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2036,27,78,hyderabad,lucknow,2250,665,19636,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2037,28,78,lucknow,Gurugram,6206,0,23217,544,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2038,29,78,lucknow,chandigarh,2250,401,10780,0,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00
+2039,30,78,lucknow,hyderabad,1234,0,19636,1017,0,184,2024-10-26 10:09:17.867988+00,2024-10-26 10:09:17.867988+00`;
+
+      // Parse CSV data
+      const rows = d3.csvParse(csvData);
+
+      // Process data into hierarchical structure
+      function processData(data) {
+        const root = { name: "root", children: [] };
+        const fromLocations = {};
+
+        data.forEach((row) => {
+          const from = row.from_location;
+          const to = row.to_location;
+          const qty = +row.total_allocated_qty;
+
+          if (!fromLocations[from]) {
+            fromLocations[from] = {
+              name: from,
+              children: [],
+            };
+            root.children.push(fromLocations[from]);
+          }
+
+          fromLocations[from].children.push({
+            name: to,
+            value: qty,
+          });
+        });
+
+        return root;
+      }
+
+      const hierarchicalData = processData(rows);
+
+      // Set up dimensions
+      const width = 800;
+      const height = 800;
+      const radius = Math.min(width, height) / 2;
+
+      // Create SVG
+      const svg = d3
+        .select("#chart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
+
+      // Create color scale
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // Create partition layout
+      const partition = (data) => {
+        const root = d3
+          .hierarchy(data)
+          .sum((d) => d.value)
+          .sort((a, b) => b.value - a.value);
+        return d3.partition().size([2 * Math.PI, radius])(root);
+      };
+
+      // Create arc generator
+      const arc = d3
+        .arc()
+        .startAngle((d) => d.x0)
+        .endAngle((d) => d.x1)
+        .innerRadius((d) => d.y0)
+        .outerRadius((d) => d.y1);
+
+      // Create tooltip
+      const tooltip = d3.select(".tooltip");
+
+      // Create the visualization
+      const root = partition(hierarchicalData);
+
+      // Draw arcs
+      svg
+        .selectAll("path")
+        .data(root.descendants())
+        .join("path")
+        .attr("fill", (d) => {
+          while (d.depth > 1) d = d.parent;
+          return color(d.data.name);
+        })
+        .attr("fill-opacity", (d) => {
+          return d.depth === 1 ? 1 : 0.7;
+        })
+        .attr("d", arc)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .style("opacity", 1)
+            .html(
+              `
+                        ${d.depth === 1 ? "From: " : "To: "}${d.data.name}<br>
+                        Quantity: ${d3.format(",")(Math.round(d.value))}
+                    `
+            )
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 10 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("opacity", 0);
+        });
+
+      // Add labels
+      svg
+        .selectAll("text")
+        .data(root.descendants().filter((d) => d.depth === 1))
+        .join("text")
+        .attr("transform", (d) => {
+          const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
+          const y = (d.y0 + d.y1) / 2;
+          return `rotate(${x - 90}) translate(${y},0) rotate(${
+            x < 180 ? 0 : 180
+          })`;
+        })
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "10px")
+        .text((d) => d.data.name);
+    </script>
+  </body>
+</html>

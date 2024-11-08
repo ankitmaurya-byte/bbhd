@@ -298,6 +298,7 @@ const PriceMaster = () => {
           },
         }
       );
+      console.log(response);
       console.log("post request end.....");
       if (response.status === 200) {
         console.log("post request end.....");

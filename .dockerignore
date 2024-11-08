@@ -1,3 +1,9 @@
 node_modules
 git
 env
+post_inventory.csv
+shipment_outputs.csv
+SKU_count_by_bucket.csv
+sku_invt_bucket_percent.csv
+SKU_percent_by_bucket.csv
+post.csv

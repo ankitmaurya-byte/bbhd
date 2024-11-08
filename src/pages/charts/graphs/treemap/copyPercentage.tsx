@@ -3,12 +3,13 @@ import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "@/hooks/useResizeObserver";
 
-const Percentage = ({ key, data, parentRef }) => {
+const CopyPercentage = ({ key, data, parentRef }) => {
   const chartRef = useRef();
   const dimensions = useResizeObserver(parentRef);
 
   useEffect(() => {
     if (!dimensions) return;
+    console.log(dimensions);
     d3.select(chartRef.current).selectAll("*").remove();
     const { width, height } = dimensions;
     const marginTop = 60,
@@ -22,14 +23,13 @@ const Percentage = ({ key, data, parentRef }) => {
     data.forEach(
       (d: {
         Location: string;
-        bucket_post_invt_days: string;
         bucket_pre_invt_days: string;
         Percent: number;
       }) => {
         if (formattedData[d.Location] === undefined) {
           formattedData[d.Location] = {};
         }
-        formattedData[d.Location][d.bucket_post_invt_days] = d.Percent;
+        formattedData[d.Location][d.bucket_pre_invt_days] = d.Percent;
       }
     );
     // datacsv.forEach((d) => {
@@ -60,6 +60,7 @@ const Percentage = ({ key, data, parentRef }) => {
       .stack()
       .keys(ageGroups)
       .value((d, key) => d[1][key] || 0)(Object.entries(formattedData));
+    console.log(width);
 
     const x = d3
       .scaleLinear()
@@ -79,10 +80,12 @@ const Percentage = ({ key, data, parentRef }) => {
       .domain(cities)
       .range([marginTop, height - marginBottom])
       .padding(0.08);
+
     const color = d3
       .scaleOrdinal()
       .domain(ageGroups)
       .range(colorList.slice(0, ageGroups.length));
+
     const svg = d3
       .create("svg")
       .attr("width", width)
@@ -161,6 +164,14 @@ const Percentage = ({ key, data, parentRef }) => {
     const legend = svg.append("g").attr("transform", `translate(${20}, ${14})`);
 
     legend
+      .append("rect")
+      .attr("class", "legend-background")
+      .attr("width", width - 40)
+      .attr("height", 34)
+      .attr("rx", 6)
+      .attr("fill", "rgba(255, 255, 255, 0.1)");
+
+    legend
       .selectAll("rect")
       .data(ageGroups)
       .join("rect")
@@ -188,4 +199,4 @@ const Percentage = ({ key, data, parentRef }) => {
   return <div ref={chartRef} style={{ overflowX: "hidden" }}></div>;
 };
 
-export default Percentage;
+export default CopyPercentage;

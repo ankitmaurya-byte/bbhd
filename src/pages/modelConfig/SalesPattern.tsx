@@ -103,12 +103,12 @@ const SalesPattern = () => {
     setIsLoading(true);
     if (!inventoryNorms.days) {
       alert.info("days are not selected");
-      setIsLoading(true);
+      setIsLoading(false);
       return;
     }
     if (!categories.length) {
       alert.info("category are not selected");
-      setIsLoading(true);
+      setIsLoading(false);
       return;
     }
     // const salesPatternData = [];

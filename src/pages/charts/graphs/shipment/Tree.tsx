@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   select,
   hierarchy,
@@ -14,8 +14,10 @@ import {
   Selection,
   BaseType,
 } from "d3";
-import jsonData from "../../jsons/tree.json";
+// import jsonData from "../../jsons/tree.json";
 import useResizeObserver from "../../../../hooks/useResizeObserver";
+import { LocationContext } from "../../Shipment";
+import logger from "redux-logger";
 
 interface Dimensions {
   width: number;
@@ -30,21 +32,40 @@ interface TreeNode {
 
 interface TransferPlanTreeProps {
   parentRef: React.RefObject<HTMLElement>;
+  jsonData: any;
 }
 
 type D3Selection = Selection<BaseType, unknown, HTMLElement, any>;
 
-const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
+const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({
+  parentRef,
+  jsonData,
+}) => {
+  const { locationData, setLocationData } = useContext(LocationContext);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const dimensions = useResizeObserver(parentRef) as Dimensions | undefined;
-  const [previousClicked, setPreviousClicked] = useState("");
-  const [rectWidth, setRectWidth] = useState(100);
-  const [json, setJson] = useState(jsonData);
+
   const [jsonCopy, setJsonCopy] = useState(
     JSON.parse(JSON.stringify(jsonData))
   );
+  const [rectWidth, setRectWidth] = useState(100);
+
+  const [json, setJson] = useState({
+    ...jsonData,
+    children: jsonData.children.map((element, index) => {
+      if (index === 0) {
+        return element;
+      }
+      return {
+        ...element,
+        children: [],
+      };
+    }),
+  });
+  const [previousClicked, setPreviousClicked] = useState(json.children[0].name);
   useEffect(() => {
     if (!dimensions || !svgRef.current) return;
+    const root = hierarchy<TreeNode>(json);
 
     const { width, height } = dimensions;
     const svg = select(svgRef.current);
@@ -53,7 +74,6 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
       .attr("height", height)
       .style("user-select", "none");
 
-    const root = hierarchy<TreeNode>(json);
     const treeLayout = tree<TreeNode>().size([height, width - 180]);
     const descendantsNodes = root.descendants();
     // const descendantsDepth1 = descendantsNodes.filter((d) => d.depth === 1);
@@ -103,10 +123,6 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
     // Modified link path generator with correct types
     const generateLinkPath = linkHorizontal<TreeNode>()
       .source((d: HierarchyPointLink<TreeNode>) => {
-        console.log(d);
-        console.log(rectWidth);
-        console.log(d.target.depth);
-
         return [
           d.source.y + rectWidth,
           (depthScales.get(d.source.depth)?.(d.source.data.name) ?? 0) +
@@ -114,7 +130,7 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
         ];
       })
       .target((d: HierarchyPointLink<TreeNode>) => {
-        d.target.y = d.target.depth * 150;
+        d.target.y = (d.target.depth * width) / 3 + 30;
         return [
           d.target.y,
           (depthScales.get(d.target.depth)?.(d.target.data.name) ?? 0) +
@@ -237,21 +253,45 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
       event: MouseEvent,
       d: HierarchyNode<TreeNode>
     ): void => {
+      if (d.depth === 2) return;
+      // if (previousClicked.name === d.data.name) {
+      //   previousClicked.children = [];
+      //  setPreviousClicked(null);
+      //   setJson();
+      // } else {
+      //   d.data.children = jsonCopy.children.filter(
+      //     (child) => child.name === d.data.name
+      //   )[0].children;
+      //   setPreviousClicked(d.data);
+      // }
+
+      // if (child.name === previousClicked) {
+      //   child.children = [];
+      // }
+
       const updatedChildren = json.children.map((child, index) => {
-        // if (child.name === previousClicked) {
-        //   child.children = [];
-        // }
         if (child.name === d.data.name) {
-          if (child.children.length === 0) {
-            setPreviousClicked(child.name);
-            child.children = jsonCopy.children[index].children;
-          } else {
+          if (previousClicked && child.name === previousClicked) {
+            setLocationData({
+              from_location: "",
+              to_location: [],
+            });
             child.children = [];
+            setPreviousClicked(null);
+          } else {
+            child.children = jsonCopy.children[index].children;
+            setPreviousClicked(child.name);
+            setLocationData({
+              from_location: child.name,
+              to_location: child.children.map((child) => child.name),
+            });
           }
+        } else {
+          child.children = [];
         }
+
         return child;
       });
-      console.log(updatedChildren);
       setJson({ ...json, children: updatedChildren });
       // if (d.data.children) {
       //   d._children = d.data.children;
@@ -265,6 +305,7 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
     // rectsBg.on("mouseover", hoverHandler).on("mouseout", mouseOutHandler);
     // rectsValue.on("mouseover", hoverHandler).on("mouseout", mouseOutHandler);
     rectsBg.on("click", clickHandler); // Update text positions with proper typing
+    rectsValue.on("click", clickHandler); // Update text positions with proper typing
     svg
       .selectAll<SVGTextElement, HierarchyNode<TreeNode>>("text")
       .data(root.descendants())
@@ -275,13 +316,27 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
         return (scale?.(d.data.name) ?? 0) + (scale?.bandwidth() ?? 0) / 2;
       })
       .attr("fill", "white")
-      .text((d) => d.data.name)
+      .html((d) => {
+        if (d.depth === 0) {
+          return (
+            `  <tspan x="-1" dy="1.3em">${d.data.name}</tspan>` +
+            `<tspan x="15" dy="1.5em" style="font-size: 0.8em;">${Math.floor(
+              d.data.value
+            )}</tspan>`
+          );
+        }
+        return (
+          d.data.name +
+          " | " +
+          `<tspan style="font-size: 0.8em">${Math.floor(d.data.value)}</tspan>`
+        );
+      })
       .attr("dy", "1.5em");
   }, [dimensions, json, rectWidth]);
 
   return (
     <div>
-      <svg className="rounded-xl" ref={svgRef}></svg>
+      <svg className="rounded-xl " ref={svgRef}></svg>
     </div>
   );
 };

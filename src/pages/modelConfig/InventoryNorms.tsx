@@ -125,9 +125,13 @@ const InventoryNorms = () => {
     setNavigateBack(true);
   };
   const handelNext = () => {
-    if (level === "") {
-      alert.info("please check levels");
+    console.log(level, normBasis, days, warehouse);
+
+    if (!level || !normBasis || !days || !warehouse) {
+      alert.removeAll();
+      alert.info("please fill all data");
     } else {
+      alert.removeAll();
       mainContent.setPages((prev) => [
         ...prev,
         level === "category" ? SalesPattern : InventoryNorms2,

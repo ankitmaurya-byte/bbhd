@@ -57,7 +57,7 @@ const userSlice = createSlice({
         companyid: null,
       };
       state.isAuthenticated = false;
-      state.status = "idle";
+      state.status = "unknown";
       state.error = null;
     },
     clearByUser: (state) => {

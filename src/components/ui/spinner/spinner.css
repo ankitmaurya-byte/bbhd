@@ -18,6 +18,15 @@
   user-select: none; /* Prevent text selection */
   z-index: 9999; /* Make sure it's on top of all elements */
 }
+.component-spinner-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2); /* Transparent background */
+  pointer-events: none; /* Disable pointer events */
+  user-select: none; /* Prevent text selection */
+  z-index: 9999; /* Make sure it's on top of all elements */
+}
 
 /* The spinner itself */
 .spinner {

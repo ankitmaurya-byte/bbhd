@@ -160,7 +160,8 @@ const LocationMaster = () => {
     const letterOnlyRegex = /^[A-Za-z\s ]*$/;
     if (letterOnlyRegex.test(inputValue)) {
       if (inputValue.length <= 20) {
-        tempLocation[index] = inputValue.toUpperCase();
+        // tempLocation[index] = inputValue.toUpperCase();
+        tempLocation[index] = inputValue;
         setLocation(tempLocation);
         alert.removeAll();
       } else {
