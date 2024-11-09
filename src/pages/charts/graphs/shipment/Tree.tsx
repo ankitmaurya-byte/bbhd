@@ -146,7 +146,7 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({
       .attr("class", "link")
       .attr("d", (d) => generateLinkPath(d) || "")
       .attr("fill", "none")
-      .attr("stroke", "white");
+      .attr("stroke", "black");
     // .attr("stroke-dasharray", function (this: SVGPathElement) {
     //   const length = this.getTotalLength();
     //   return `${length} ${length}`;
@@ -170,7 +170,7 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({
       })
       .attr("width", rectWidth)
       .attr("height", 12)
-      .attr("fill", "#eeeded")
+      .attr("fill", "wheat")
       .attr("rx", 1)
       .attr("ry", 1)
       .style("cursor", "pointer");
@@ -315,7 +315,7 @@ const TransferPlanTree: React.FC<TransferPlanTreeProps> = ({
         const scale = depthScales.get(d.depth);
         return (scale?.(d.data.name) ?? 0) + (scale?.bandwidth() ?? 0) / 2;
       })
-      .attr("fill", "white")
+      .attr("fill", "black")
       .html((d) => {
         if (d.depth === 0) {
           return (

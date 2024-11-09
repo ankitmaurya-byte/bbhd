@@ -144,9 +144,9 @@ const CopyPercentage = ({ key, data, parentRef }) => {
           .tickFormat((d) => `${d}%`)
       )
       .call((g) => {
-        g.selectAll(".domain, .tick line").attr("stroke", "white");
+        g.selectAll(".domain, .tick line").attr("stroke", "black");
         g.selectAll(".tick text")
-          .attr("fill", "white")
+          .attr("fill", "black")
           .attr("font-size", "14px");
       });
 
@@ -155,9 +155,9 @@ const CopyPercentage = ({ key, data, parentRef }) => {
       .attr("transform", `translate(${marginLeft},0)`)
       .call(d3.axisLeft(y).tickSizeOuter(0))
       .call((g) => {
-        g.selectAll(".domain, .tick line").attr("stroke", "white");
+        g.selectAll(".domain, .tick line").attr("stroke", "black");
         g.selectAll(".tick text")
-          .attr("fill", "white")
+          .attr("fill", "black")
           .attr("font-size", "14px");
       });
 
@@ -187,7 +187,7 @@ const CopyPercentage = ({ key, data, parentRef }) => {
       .attr("x", (d, i) => i * (width / ageGroups.length) + 24)
       .attr("y", 9)
       .attr("dy", "0.35em")
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("font-size", "12px")
       .text((d) => d);
 

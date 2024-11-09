@@ -116,7 +116,7 @@ const Percentage = ({ key, data, parentRef }) => {
       .attr("width", (d) => x(d[1]) - x(d[0]))
       .on("mouseover", (event, d) => {
         d3.select(event.currentTarget)
-          .attr("stroke", "white")
+          .attr("stroke", "black")
           .attr("stroke-width", 1.5);
         tooltip.transition().duration(200).style("opacity", 0.9);
         tooltip
@@ -141,9 +141,9 @@ const Percentage = ({ key, data, parentRef }) => {
           .tickFormat((d) => `${d}%`)
       )
       .call((g) => {
-        g.selectAll(".domain, .tick line").attr("stroke", "white");
+        g.selectAll(".domain, .tick line").attr("stroke", "black");
         g.selectAll(".tick text")
-          .attr("fill", "white")
+          .attr("fill", "black")
           .attr("font-size", "14px");
       });
 
@@ -152,9 +152,9 @@ const Percentage = ({ key, data, parentRef }) => {
       .attr("transform", `translate(${marginLeft},0)`)
       .call(d3.axisLeft(y).tickSizeOuter(0))
       .call((g) => {
-        g.selectAll(".domain, .tick line").attr("stroke", "white");
+        g.selectAll(".domain, .tick line").attr("stroke", "black");
         g.selectAll(".tick text")
-          .attr("fill", "white")
+          .attr("fill", "black")
           .attr("font-size", "14px");
       });
 
@@ -176,7 +176,7 @@ const Percentage = ({ key, data, parentRef }) => {
       .attr("x", (d, i) => i * (width / ageGroups.length) + 24)
       .attr("y", 9)
       .attr("dy", "0.35em")
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("font-size", "12px")
       .text((d) => d);
 

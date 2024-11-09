@@ -84,7 +84,7 @@ const PrepostMultibar = ({ data, parentRef }) => {
       .attr("y", -margin.left + 15) // Position the text to the left of the Y-axis
       .attr("dy", "1em") // Adjust vertical alignment
       .style("text-anchor", "middle")
-      .style("fill", "white") // Set label color
+      .style("fill", "black") // Set label color
       .style("font-size", "18px")
       .text("Inventory Days");
     // X-axis
@@ -92,17 +92,17 @@ const PrepostMultibar = ({ data, parentRef }) => {
       .append("g")
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x0))
-      .style("color", "white")
+      .style("color", "black")
       .selectAll("text")
       .attr("dy", (d, i) => (i % 2 === 0 ? "15" : "4"))
       .style("text-anchor", "middle")
-      .style("color", "white")
+      .style("color", "black")
       .style("font-size", "12px");
     chartGroup
       .selectAll(".tick line")
       .attr("y2", (d, i) => (i % 2 === 0 ? "15" : "4"));
     // Y-axis
-    // chartGroup.append("g").call(d3.axisLeft(y)).style("color", "white");
+    // chartGroup.append("g").call(d3.axisLeft(y)).style("color", "black");
 
     // Bars
     chartGroup
@@ -135,7 +135,7 @@ const PrepostMultibar = ({ data, parentRef }) => {
       .attr("x", (d) => x1(d.key) + x1.bandwidth() / 2) // Center text in bar
       .attr("y", (d) => y(d.value) - 5) // Position text above bar
       .attr("text-anchor", "middle")
-      .style("fill", "white") // Set label color
+      .style("fill", "black") // Set label color
       .style("font-size", "10px")
       .text((d) => d.value.toFixed(1)); // Format the value
   }, [formattedData, dimensions]);

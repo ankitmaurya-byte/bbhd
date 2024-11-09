@@ -67,14 +67,13 @@ function getPathCenter(d) {
 }
 
 const createLine = (mapGroup, { from_location, to_location }) => {
-  if (!mapGroup) return; // Check for valid inputs
+  if (!mapGroup) return;
 
-  // Remove previously drawn lines
-  mapGroup.selectAll("path.line").remove(); // Assuming you add a class "line" to your new paths
+  // Remove previously drawn lines and labels
+  mapGroup.selectAll("path.line").remove();
+  mapGroup.selectAll("text.line-label").remove(); // Remove previous labels
 
   to_location.forEach((city) => {
-    console.log(city);
-
     const p1 = mapGroup
       .selectAll("path.map")
       .filter((d) =>
@@ -82,7 +81,6 @@ const createLine = (mapGroup, { from_location, to_location }) => {
       );
     if (p1["_groups"][0].length === 0) return;
     const path1 = p1.attr("d");
-
     const lineCentre1 = getPathCenter(path1);
 
     const p2 = mapGroup
@@ -90,12 +88,8 @@ const createLine = (mapGroup, { from_location, to_location }) => {
       .filter((d) =>
         d.properties.name.toLowerCase().includes(city.toLowerCase())
       );
-
-    console.log(p2["_groups"][0].length);
     if (p2["_groups"][0].length === 0) return;
-
     const path2 = p2.attr("d");
-
     const lineCentre2 = getPathCenter(path2);
 
     const lineGenerator = line()
@@ -105,7 +99,7 @@ const createLine = (mapGroup, { from_location, to_location }) => {
 
     mapGroup
       .append("path")
-      .attr("class", "line") // Add a class to the path for easier removal later
+      .attr("class", "line")
       .attr(
         "d",
         lineGenerator([
@@ -120,9 +114,31 @@ const createLine = (mapGroup, { from_location, to_location }) => {
       .attr("fill", "none")
       .attr("stroke", "red")
       .attr("stroke-width", 2)
-      .attr("fill", "none")
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round");
+
+    // Add text labels for start and end points
+    mapGroup
+      .append("text")
+      .attr("class", "line-label")
+      .attr("x", lineCentre1.x)
+      .attr("y", lineCentre1.y)
+      .attr("dy", "-0.5em") // Adjust position above the point
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px")
+      .text(from_location); // Label for starting point
+
+    mapGroup
+      .append("text")
+      .attr("class", "line-label")
+      .attr("x", lineCentre2.x)
+      .attr("y", lineCentre2.y)
+      .attr("dy", "-0.5em") // Adjust position above the point
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px")
+      .text(city); // Label for ending point
   });
 };
 
@@ -181,7 +197,7 @@ const Map: React.FC<TransferPlanTreeProps> = ({ parentRef }) => {
       .attr("class", "map")
       .attr("d", (feature) => pathGenerator(feature) || "")
       .attr("fill", "none")
-      .attr("stroke", "#FFFFFF")
+      .attr("stroke", "black")
       .attr("stroke-width", 0.1);
 
     // Setup zoom behavior with proper typing

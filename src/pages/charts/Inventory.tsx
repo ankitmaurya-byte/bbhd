@@ -40,35 +40,35 @@ const Inventory = () => {
     queryKey: ["postSKUdata"],
     queryFn: () => fetchData(`api/sku_bucket_data_post/${user_id}`),
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
   });
 
   const { data: preSKUdata, isLoading: preSKUIsLoading } = useQuery({
     queryKey: ["preSKUdata"],
     queryFn: () => fetchData(`api/sku_bucket_data_pre/${user_id}`),
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
   });
 
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ["postData"],
     queryFn: () => fetchData(`api/post_inventory_outputs/${user_id}`),
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
   });
 
   const { data: shipmentData, isLoading: shipmentIsLoading } = useQuery({
     queryKey: ["shipmentData"],
     queryFn: () => fetchData(`api/shipments_outputs/${user_id}`),
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
   });
 
   // CSV Conversion
-  const convertToCSV = (data) => {
+  const convertToCSV = (data: Record<string, any>[]): string => {
     if (!data || data.length === 0) return "";
     const headers = Object.keys(data[0]).join(",");
-    const rows = data.map((row) =>
+    const rows = data.map((row: Record<string, any>) =>
       Object.values(row)
         .map((value) => `"${value}"`)
         .join(",")
@@ -87,22 +87,25 @@ const Inventory = () => {
   };
 
   return (
-    <ContentWrapper>
+    <>
       <div className="items-center overflow-hidden w-full mx-auto p-4 select-none">
-        <div className="absolute inset-0 h-full w-full bg-[rgb(40,50,86)]/75 -z-10"></div>
+        <div className="absolute inset-0 h-full w-full bg-white/55 -z-10"></div>
         <Img
           src="/background-image.jpg"
           alt="Product Image"
           className="absolute -z-20 inset-0 h-full w-full object-cover"
         />
-        <div className="h-[230vh] mt-[12vh] grid grid-cols-2 grid-rows-[1.8fr_2fr_1.5fr_3fr] gap-5">
+        <div className="h-[300vh] mt-[12vh] grid grid-cols-2 grid-rows-[.4fr_1.8fr_2fr_1.5fr_3fr] gap-5">
           {/* Percentage Component */}
+          <div className="col-span-full text-black place-self-start text-start  font-bold text-2xl">
+            Opti inventory days
+          </div>{" "}
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl tracking-wide">
+            <div className="text-black text-center font-bold text-2xl tracking-wide">
               SKU Count by Previous Inventory Days
             </div>
             <div
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
               ref={percentageref}
             >
               {!postSKUIsLoading ? (
@@ -116,14 +119,13 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           {/* Copy Percentage Component */}
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl tracking-wide">
+            <div className="text-black text-center font-bold text-2xl tracking-wide">
               SKU Count by Pre Inventory Days
             </div>
             <div
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
               ref={copypercentageref}
             >
               {!preSKUIsLoading ? (
@@ -137,15 +139,14 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           {/* TreeMap Components */}
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl tracking-wide">
+            <div className="text-black text-center font-bold text-2xl tracking-wide">
               Previous Inventory Treemap
             </div>
             <div
               ref={treemapref2}
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
             >
               {!postIsLoading ? (
                 <TreeMapSquarify
@@ -158,14 +159,13 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl">
+            <div className="text-black text-center font-bold text-2xl">
               Post-Transfer Inventory Treemap
             </div>
             <div
               ref={treemapref1}
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
             >
               {!postIsLoading ? (
                 <TreeMapSquarify
@@ -178,14 +178,13 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           {/* Multibar and Post Inventory Components */}
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl tracking-wide">
+            <div className="text-black text-center font-bold text-2xl tracking-wide">
               Pre VS Post Inventory Days
             </div>
             <div
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
               ref={prePostMultibar}
             >
               {!postIsLoading ? (
@@ -195,14 +194,13 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           <div className="grid grid-rows-[1fr_7fr]">
-            <div className="text-white text-center font-bold text-2xl tracking-wide">
+            <div className="text-black text-center font-bold text-2xl tracking-wide">
               Post Inventory
             </div>
             <div
               ref={postInventoryRef}
-              className="border border-white rounded bg-white/10"
+              className="border border-white rounded bg-white/50"
             >
               {!postIsLoading ? (
                 <PostInventory data={postData} parentRef={postInventoryRef} />
@@ -211,10 +209,9 @@ const Inventory = () => {
               )}
             </div>
           </div>
-
           {/* Sunburst Component */}
           <div
-            className="border border-white rounded bg-white/10 col-span-full"
+            className="border border-white rounded bg-white/50 col-span-full"
             ref={sunburst}
           >
             {!shipmentIsLoading ? (
@@ -229,20 +226,20 @@ const Inventory = () => {
       {/* Download Button */}
       <button
         onClick={downloadZip}
-        className="text-2xl text-white bg-yellow-500 flex items-center justify-center w-full h-full mt-10"
+        className="text-2xl text-black bg-yellow-500 flex items-center justify-center w-full h-full mt-10"
       >
         Download All CSV as ZIP
       </button>
 
       <Link
         to={"/shipment"}
-        className="text-2xl text-white bg-yellow-500 flex items-center justify-center w-full h-full mt-10"
+        className="text-2xl text-black bg-yellow-500 flex items-center justify-center w-full h-full mt-10"
       >
         Previous
       </Link>
 
       <div className="w-full h-[30vh]"></div>
-    </ContentWrapper>
+    </>
   );
 };
 

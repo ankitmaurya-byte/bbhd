@@ -43,7 +43,7 @@ const PostInventory = ({ data, parentRef }) => {
     // .append("div");
     // .attr(
     //   "class",
-    //   "tooltip absolute bg-white border border-gray-300 p-2 text-xs opacity-0 pointer-events-none transition-opacity duration-200 ease-in-out"
+    //   "tooltip absolute bg-black border border-gray-300 p-2 text-xs opacity-0 pointer-events-none transition-opacity duration-200 ease-in-out"
     // );
 
     const x = d3
@@ -63,20 +63,22 @@ const PostInventory = ({ data, parentRef }) => {
       .append("g")
       .attr("transform", `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
-      .style("color", "white")
+      .style("color", "black")
       .selectAll("text")
-      .attr("dy", (d, i) => (i % 2 === 0 ? "12" : "2"))
+      .attr("dy", "12")
+      .attr("transform", "rotate(-15)")
       .style("text-anchor", "middle")
-      .style("font-size", "6px")
-      .style("color", "white")
-      .style("font-weight", "100");
+      .style("font-size", "9px")
+      .style("color", "black")
+      .style("font-weight", "100")
+      .style("letter-spacing", "1px");
 
     // Vertical axis
     svg
       .append("g")
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(y))
-      .style("color", "white")
+      .style("color", "black")
       .call((g) =>
         g
           .append("text")
@@ -85,12 +87,12 @@ const PostInventory = ({ data, parentRef }) => {
           .attr("y", -margin.left + 15) // Position the text to the left of the Y-axis
           .attr("dy", "1em") // Adjust vertical alignment
           .style("text-anchor", "middle")
-          .style("fill", "white") // Set label color
+          .style("fill", "black") // Set label color
           .style("font-size", "18px")
           .text("Inventory Days")
       )
       .selectAll("text")
-      .style("color", "white");
+      .style("color", "black");
     // .style("font-weight", "100");
 
     const line = d3

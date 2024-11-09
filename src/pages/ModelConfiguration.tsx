@@ -78,6 +78,7 @@ const ModelConfiguration = () => {
       behavior: "smooth",
     });
   };
+
   useEffect(() => {
     if (navigateNext && mainContent.current) {
       setNavigateNext(false);
